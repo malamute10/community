@@ -15,7 +15,6 @@ spring:
       hibernate:
         globally_quoted_identifiers: true
         show_sql: true
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
   datasource:
     driver-class-name: org.h2.Driver
