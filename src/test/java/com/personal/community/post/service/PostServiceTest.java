@@ -69,6 +69,5 @@ public class PostServiceTest {
                 .password("password")
                 .nickname("nickname")
                 .build();
-
     }
 }
