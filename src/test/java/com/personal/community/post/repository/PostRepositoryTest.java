@@ -1,7 +1,6 @@
 package com.personal.community.post.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.personal.community.common.CommunityEnum;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.repository.PostRepository;
 import com.personal.community.domain.user.entity.User;
@@ -67,6 +66,7 @@ public class PostRepositoryTest {
                 .title("title")
                 .author("author")
                 .content("content")
+                .type(CommunityEnum.PostType.FREE_BOARD)
                 .user(user)
                 .build();
     }
