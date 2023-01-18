@@ -64,15 +64,21 @@ public class Post {
     private User user;
 
     @Builder
-    public Post(String title, String content, String author, CommunityEnum.PostType type, User user) {
+    public Post(Long id, String title, String content, String author, CommunityEnum.PostType type, User user) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.author = author;
         this.user = user;
         this.type = type;
+        this.view = 0L;
     }
 
     public void addUser(User user){
         this.user = user;
+    }
+
+    public void plusView(){
+        this.view++;
     }
 }

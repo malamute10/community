@@ -23,4 +23,12 @@ public class PostService {
 
         postRepository.save(post);
     }
+
+    @Transactional
+    public Post findById(Long postId){
+        Post post = postRepository.findById(postId).orElseThrow(RuntimeException::new);
+
+        post.plusView();
+        return post;
+    }
 }
