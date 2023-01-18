@@ -19,6 +19,9 @@ import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.service.UserService;
+import com.personal.community.post.PostTest;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -43,7 +46,7 @@ import org.springframework.util.MultiValueMap;
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @WebMvcTest(PostController.class)
-public class PostControllerTest {
+public class PostControllerTest extends PostTest {
 
     final String baseUrl = "/api/v1/posts";
     @Autowired
@@ -95,8 +98,7 @@ public class PostControllerTest {
     void test2() throws Exception {
         //given
         User user = createUserForTest();
-        Post post = createPostForTest(user);
-        ResponsePostDto.PostDto postDto = new ResponsePostDto.PostDto();
+        Post post = createPostForTest(1L, user);
 
         given(postService.findById(any())).willReturn(post);
 
@@ -110,23 +112,24 @@ public class PostControllerTest {
         result.andExpect(status().isOk()).andDo(print());
     }
 
-    private Post createPostForTest(User user){
-        return Post.builder()
-                .id(1L)
-                .title("title")
-                .author("author")
-                .content("content")
-                .type(CommunityEnum.PostType.FREE_BOARD)
-                .user(user)
-                .build();
-    }
+    @Test
+    @DisplayName("게시물 목록 조회 controller 테스트")
+    void test3() throws Exception {
+        //given
+        User user = createUserForTest();
+        Post post1 = createPostForTest(1L, user);
+        Post post2 = createPostForTest(2L, user);
+        List<Post> postList = new ArrayList<>();
+        postList.add(post1);
+        postList.add(post2);
 
-    private User createUserForTest(){
-        return User.builder()
-                .id(1L)
-                .email("malamut10@naver.com")
-                .password("password")
-                .nickname("nickname")
-                .build();
+        given(postService.findAll()).willReturn(postList);
+
+        //when
+        ResultActions result = mvc.perform(get(baseUrl)
+                                                   .contentType("application/json;charset=UTF-8"));
+
+        //then
+        result.andExpect(status().isOk()).andDo(print());
     }
 }

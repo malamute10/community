@@ -11,6 +11,9 @@ import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.repository.PostRepository;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
+import com.personal.community.post.PostTest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +27,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class PostServiceTest {
+public class PostServiceTest extends PostTest {
 
     @Mock
     PostRepository postRepository;
@@ -40,7 +43,7 @@ public class PostServiceTest {
     void save() {
         //given
         User user = createUserForTest();
-        Post post = createPostForTest(user);
+        Post post = createPostForTest(1L, user);
         given(postRepository.save(any())).willReturn(post);
 
         RequestPostDto.CreatePostDto createPostDto = new RequestPostDto.CreatePostDto();
@@ -60,7 +63,7 @@ public class PostServiceTest {
     void find() {
         //given
         User user = createUserForTest();
-        Post post = createPostForTest(user);
+        Post post = createPostForTest(1L, user);
         given(postRepository.findById(any())).willReturn(Optional.ofNullable(post));
 
         //when
@@ -71,22 +74,25 @@ public class PostServiceTest {
         assertThat(result.getView()).isEqualTo(1);
     }
 
-    private Post createPostForTest(User user){
-        return Post.builder()
-                .id(1L)
-                .title("title")
-                .author("author")
-                .content("content")
-                .type(CommunityEnum.PostType.FREE_BOARD)
-                .user(user)
-                .build();
+    @Test
+    @DisplayName("목록 조회 테스트")
+    void findAll() {
+        //given
+        User user = createUserForTest();
+        Post post1 = createPostForTest(1l, user);
+        Post post2 = createPostForTest(2l, user);
+        List<Post> postList = new ArrayList<>();
+        postList.add(post1);
+        postList.add(post2);
+
+        given(postRepository.findAll()).willReturn(postList);
+
+        //when
+        List<Post> resultList = postService.findAll();
+
+        //then
+        assertThat(resultList.size()).isEqualTo(2);
     }
 
-    private User createUserForTest(){
-        return User.builder()
-                .email("malamut10@naver.com")
-                .password("password")
-                .nickname("nickname")
-                .build();
-    }
+
 }

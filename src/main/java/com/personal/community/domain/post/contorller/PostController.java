@@ -8,6 +8,7 @@ import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +43,12 @@ public class PostController {
         Post post = postService.findById(postId);
         ResponsePostDto.PostDto postDto = mapper.convertEntityToDto(post);
         return ResponseEntity.ok(postDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponsePostDto.PostDtoList> findAll(){
+        List<Post> postList = postService.findAll();
+        List<ResponsePostDto.PostDto> postDtoList = mapper.convertEntityToDto(postList);
+        return ResponseEntity.ok(ResponsePostDto.PostDtoList.ofCreate(postDtoList));
     }
 }
