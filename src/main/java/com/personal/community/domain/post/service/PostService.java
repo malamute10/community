@@ -37,4 +37,9 @@ public class PostService {
     public List<Post> findAll() {
         return postRepository.findAll();
     }
+
+    @Transactional
+    public void deleteById(Long postId) {
+        postRepository.deleteById(postId);
+    }
 }
