@@ -17,7 +17,7 @@ public class RequestUserDto {
         @Pattern(regexp = "^[A-Za-z가-힣][a-zA-Z가-힣0-9]{1,7}$", message = "닉네임은 2자 이상 8자 이하여야 합니다.")
         private String nickname;
 
-        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[a-zA-Z0-9]{8,20}", message = "비밀번호는 영문, 숫자를 섞어 8자 이상 20자 이하여야 합니다.")
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*[!@#$%^&*])(?=.*\\d)[a-zA-Z0-9!@#$%^&*]{8,20}", message = "비밀번호는 특수문자, 영문, 숫자를 섞어 8자 이상 20자 이하여야 합니다.")
         private String password;
         private String confirmPassword;
 
