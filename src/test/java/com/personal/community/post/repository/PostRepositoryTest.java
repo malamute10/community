@@ -36,7 +36,8 @@ public class PostRepositoryTest extends PostTest {
     void save(){
         //given
         User user = this.createUserForTest();
-        Post post = this.createPostForTest(null, user);
+        User savedUser = userRepository.save(user);
+        Post post = this.createPostForTest(null, savedUser);
 
         //when
         Post savedPost = postRepository.save(post);

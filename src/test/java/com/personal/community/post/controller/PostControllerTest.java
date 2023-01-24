@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.personal.community.common.CommunityEnum;
 import com.personal.community.common.MapStruct;
 import com.personal.community.common.MapStructImpl;
+import com.personal.community.config.security.SecurityConfig;
 import com.personal.community.domain.post.contorller.PostController;
 import com.personal.community.domain.post.dto.RequestPostDto;
 import com.personal.community.domain.post.dto.ResponsePostDto;
@@ -35,17 +36,23 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 
 @ActiveProfiles("test")
-@AutoConfigureMockMvc
-@WebMvcTest(PostController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = PostController.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class),
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OncePerRequestFilter.class)})
 public class PostControllerTest extends PostTest {
 
     final String baseUrl = "/api/v1/posts";

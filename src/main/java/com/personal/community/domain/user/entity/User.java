@@ -34,7 +34,6 @@ public class User {
 
     @Column(nullable = false)
     private String nickname;
-
     @Column
     private CommunityEnum.UserRole userRole;
 
@@ -57,5 +56,19 @@ public class User {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+    }
+
+    public static User ofCreate(String email, String password, String nickname) {
+        User user = new User();
+        user.email = email;
+        user.password = password;
+        user.nickname = nickname;
+        user.userRole = CommunityEnum.UserRole.USER;
+        return user;
+    }
+
+    public void signup(String encodedPassword){
+        this.password = encodedPassword;
+        this.userRole = CommunityEnum.UserRole.USER;
     }
 }
