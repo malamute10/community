@@ -54,7 +54,6 @@ public class PostControllerTest extends PostTest {
 
     @MockBean
     PostService postService;
-
     @MockBean
     UserService userService;
     @Autowired

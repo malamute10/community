@@ -1,5 +1,6 @@
 package com.personal.community.config.security;
 
+import com.personal.community.config.exception.FilterExceptionHandler;
 import com.personal.community.config.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final FilterExceptionHandler filterExceptionHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -26,11 +28,13 @@ public class SecurityConfig {
         http.cors()
                 .and()
                 .authorizeHttpRequests()
+                .requestMatchers("/api/v1/post/errortest").permitAll()
                 .anyRequest().permitAll();
         http.securityContext((securityContext) -> securityContext
                         .requireExplicitSave(true));
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(filterExceptionHandler, JwtAuthenticationFilter.class);
         return http.build();
     }
 

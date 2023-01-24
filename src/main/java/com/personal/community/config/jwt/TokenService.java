@@ -1,18 +1,22 @@
 package com.personal.community.config.jwt;
 
 
-import com.personal.community.common.CommunityEnum;
+import com.personal.community.config.exception.CommunityException;
+import com.personal.community.config.exception.ExceptionEnum;
 import com.personal.community.domain.user.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.security.Key;
 import java.sql.Date;
 import java.time.LocalDate;
 import javax.security.auth.kerberos.EncryptionKey;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class TokenService {
 
@@ -37,7 +41,11 @@ public class TokenService {
     }
 
     public boolean verifyToken(String token) {
-        return this.isExpired(token);
+        try {
+            return this.isExpired(token);
+        } catch (ExpiredJwtException e) {
+            throw CommunityException.of(ExceptionEnum.EXPIRED_TOKEN);
+        }
     }
 
     public String getUsername(String token){

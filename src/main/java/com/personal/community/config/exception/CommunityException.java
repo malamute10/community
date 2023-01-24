@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class CommunityException extends Throwable{
+public class CommunityException extends RuntimeException {
 
     private HttpStatus status;
     private String message;

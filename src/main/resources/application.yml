@@ -15,6 +15,6 @@ spring:
 
 jwt:
   prefix: Bearer
-  header: Authentication
+  header: Authorization
   access-token: 7200000   #2시간
   secret : community
