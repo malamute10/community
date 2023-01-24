@@ -1,9 +1,9 @@
 package com.personal.community.config.jwt;
 
 
+import com.personal.community.common.CommunityEnum;
 import com.personal.community.config.exception.CommunityException;
 import com.personal.community.config.exception.ExceptionEnum;
-import com.personal.community.domain.user.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -26,12 +26,12 @@ public class TokenService {
     @Value("${jwt.secret}")
     private String SECRET;
 
-    public String generateAccessToken(User user) {
-        return this.generateToken(user, ACCESS_TOKEN_DURATION);
+    public String generateAccessToken(String email, CommunityEnum.UserRole userRole) {
+        return this.generateToken(email, userRole, ACCESS_TOKEN_DURATION);
     }
-    private String generateToken(User user, Long expirationTime) {
-        Claims claims = Jwts.claims().setSubject(user.getEmail());
-        claims.put("ROLE", user.getUserRole());
+    private String generateToken(String email, CommunityEnum.UserRole userRole, Long expirationTime) {
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("ROLE", userRole);
         claims.setIssuedAt(Date.valueOf(LocalDate.now()));
 
 

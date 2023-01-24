@@ -56,6 +56,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.userRole = CommunityEnum.UserRole.USER;
     }
 
     public static User ofCreate(String email, String password, String nickname) {
@@ -67,8 +68,12 @@ public class User {
         return user;
     }
 
-    public void signup(String encodedPassword){
+    public void signup(String encodedPassword) {
         this.password = encodedPassword;
         this.userRole = CommunityEnum.UserRole.USER;
+    }
+
+    public void signin() {
+        this.lastLoginDate = LocalDateTime.now();
     }
 }

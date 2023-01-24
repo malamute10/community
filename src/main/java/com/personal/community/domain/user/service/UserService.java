@@ -4,14 +4,17 @@ import com.personal.community.common.MapStruct;
 import com.personal.community.config.exception.CommunityException;
 import com.personal.community.config.exception.ExceptionEnum;
 import com.personal.community.domain.user.dto.RequestUserDto;
+import com.personal.community.domain.user.dto.ResponseUserDto;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -38,6 +41,19 @@ public class UserService {
         user.signup(passwordEncoder.encode(user.getPassword()));
 
         userRepository.save(user);
+    }
+
+    @Transactional
+    public ResponseUserDto.SigninUserDto signin(String email, String password) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> CommunityException.of(ExceptionEnum.NOT_FOUND, "아이디 또는 비밀번호를 확인해주세요."));
+
+        if(!passwordEncoder.matches(user.getPassword(), password)) {
+            throw CommunityException.of(ExceptionEnum.NOT_FOUND, "아이디 또는 비밀번호를 확인해주세요.");
+        }
+        user.signin();
+
+        return mapper.convertEntityToDto(user);
     }
 
     public Optional<User> findUserByEmail(String email) {

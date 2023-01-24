@@ -4,12 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import com.personal.community.common.CommunityEnum;
 import com.personal.community.common.MapStruct;
+import com.personal.community.config.security.SecurityConfig;
 import com.personal.community.domain.user.dto.RequestUserDto;
+import com.personal.community.domain.user.dto.ResponseUserDto;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
 import com.personal.community.domain.user.service.UserService;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +23,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
+@Slf4j
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -34,7 +43,7 @@ public class UserServiceTest {
     @Spy
     MapStruct mapper = Mappers.getMapper(MapStruct.class);
 
-    @Spy
+    @Mock
     BCryptPasswordEncoder passwordEncoder;
 
     @Test
@@ -52,7 +61,7 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("회원가입 테스트")
+    @DisplayName("회원가입 서비스 테스트")
     void signup() {
         //given
         User user = User.ofCreate("email", "password", "nickname");
@@ -63,6 +72,7 @@ public class UserServiceTest {
         userSignupDto.setConfirmPassword("password");
 
         given(userRepository.save(any())).willReturn(user);
+        given(passwordEncoder.encode(any())).willReturn("password");
 
         //when
         userService.signup(userSignupDto);
@@ -70,10 +80,28 @@ public class UserServiceTest {
         //then
     }
 
+    @Test
+    @DisplayName("로그인 서비스 테스트")
+    void signin() {
+        //given
+        User user = this.createUserForTest();
+        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(passwordEncoder.matches(any(), any())).willReturn(true);
+
+        //when
+        ResponseUserDto.SigninUserDto SigninUserDto = userService.signin("malamute10@naver.com", "password");
+
+        //then
+        assertThat(SigninUserDto.getId()).isEqualTo(1L);
+        assertThat(SigninUserDto.getEmail()).isEqualTo("malamute10@naver.com");
+        assertThat(SigninUserDto.getNickname()).isEqualTo("nickname");
+        assertThat(SigninUserDto.getUserRole()).isEqualTo(CommunityEnum.UserRole.USER);
+    }
+
     private User createUserForTest(){
         return User.builder()
                 .id(1L)
-                .email("malamut10@naver.com")
+                .email("malamute10@naver.com")
                 .password("password")
                 .nickname("nickname")
                 .build();

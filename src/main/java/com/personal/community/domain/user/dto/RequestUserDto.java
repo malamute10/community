@@ -27,4 +27,10 @@ public class RequestUserDto {
             }
         }
     }
+
+    @Data
+    public static class UserSigninDto {
+        private String email;
+        private String password;
+    }
 }
