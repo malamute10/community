@@ -1,6 +1,7 @@
 package com.personal.community.domain.user.entity;
 
 
+import com.personal.community.common.CommunityEnum;
 import com.personal.community.domain.post.entity.Post;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,6 +34,9 @@ public class User {
 
     @Column(nullable = false)
     private String nickname;
+
+    @Column
+    private CommunityEnum.UserRole userRole;
 
     @CreatedDate
     @Column(name = "created_date")

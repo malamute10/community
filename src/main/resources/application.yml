@@ -13,3 +13,8 @@ spring:
         globally_quoted_identifiers: true
         format_sql: true
 
+jwt:
+  prefix: Bearer
+  header: Authentication
+  access-token: 7200000   #2시간
+  secret : community

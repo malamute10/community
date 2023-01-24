@@ -7,4 +7,9 @@ public class CommunityEnum {
         NOTICE,
         FREE_BOARD
     }
+
+    public enum UserRole {
+        ADMIN,
+        USER
+    }
 }
