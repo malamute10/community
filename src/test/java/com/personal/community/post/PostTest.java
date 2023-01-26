@@ -18,6 +18,7 @@ public class PostTest {
 
     protected User createUserForTest(){
         return User.builder()
+                .id(1L)
                 .email("malamut10@naver.com")
                 .password("password")
                 .nickname("nickname")
