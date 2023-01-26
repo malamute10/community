@@ -26,4 +26,6 @@ public interface MapStruct {
     List<ResponsePostDto.PostDto> convertEntityToDto(List<Post> post);
 
     ResponseUserDto.SigninUserDto convertEntityToDto(User user);
+
+    ResponseUserDto.UserInfoDto convertUserToUserInfoDto(User user);
 }

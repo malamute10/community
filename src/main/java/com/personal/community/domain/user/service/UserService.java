@@ -5,6 +5,7 @@ import com.personal.community.config.exception.CommunityException;
 import com.personal.community.config.exception.ExceptionEnum;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
+import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
 import java.util.Optional;
@@ -58,5 +59,10 @@ public class UserService {
 
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public UserInfoDto getUserInfo(Long id) {
+        User user = this.findUserById(id);
+        return mapper.convertUserToUserInfoDto(user);
     }
 }

@@ -2,6 +2,7 @@ package com.personal.community.user.contoller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -13,7 +14,9 @@ import com.personal.community.config.security.SecurityConfig;
 import com.personal.community.domain.user.controller.UserController;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
+import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
 import com.personal.community.domain.user.service.UserService;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +94,27 @@ public class UserControllerTest {
         ResultActions result = mvc.perform(post(baseUrl + "/signin").contentType(MediaType.APPLICATION_JSON)
                                                     .content(objectMapper.writeValueAsBytes(userSigninDto)));
 
+        //then
+        result.andExpect(status().isOk()).andDo(print());
+    }
+
+    @Test
+    @DisplayName("내 정보 조회 컨트롤러 테스트")
+    void getInfo() throws Exception{
+        //given
+        UserInfoDto userInfoDto = new UserInfoDto();
+        userInfoDto.setId(1L);
+        userInfoDto.setEmail("malamute10@naver.com");
+        userInfoDto.setNickname("nickname");
+        userInfoDto.setCreatedDate(LocalDateTime.now());
+        userInfoDto.setLastLoginDate(LocalDateTime.now());
+
+        given(userService.getUserInfo(1L)).willReturn(userInfoDto);
+
+        //when
+        ResultActions result =
+                mvc.perform(get(baseUrl + "/{userId}", 1L)
+                                                   .contentType(MediaType.APPLICATION_JSON));
         //then
         result.andExpect(status().isOk()).andDo(print());
     }

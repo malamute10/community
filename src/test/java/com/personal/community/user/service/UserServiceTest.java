@@ -9,6 +9,7 @@ import com.personal.community.common.MapStruct;
 import com.personal.community.config.security.SecurityConfig;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
+import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
 import com.personal.community.domain.user.service.UserService;
@@ -36,13 +37,10 @@ public class UserServiceTest {
 
     @Mock
     UserRepository userRepository;
-
     @InjectMocks
     UserService userService;
-
     @Spy
     MapStruct mapper = Mappers.getMapper(MapStruct.class);
-
     @Mock
     BCryptPasswordEncoder passwordEncoder;
 
@@ -96,6 +94,22 @@ public class UserServiceTest {
         assertThat(SigninUserDto.getEmail()).isEqualTo("malamute10@naver.com");
         assertThat(SigninUserDto.getNickname()).isEqualTo("nickname");
         assertThat(SigninUserDto.getUserRole()).isEqualTo(CommunityEnum.UserRole.USER);
+    }
+
+    @Test
+    @DisplayName("내 정보 조회 서비스 테스트")
+    void getInfo() {
+        //given
+        User user = createUserForTest();
+        given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
+
+        //when
+        UserInfoDto userInfo = userService.getUserInfo(user.getId());
+
+        //then
+        assertThat(userInfo.getId()).isEqualTo(1L);
+        assertThat(userInfo.getEmail()).isEqualTo("malamute10@naver.com");
+        assertThat(userInfo.getNickname()).isEqualTo("nickname");
     }
 
     private User createUserForTest(){

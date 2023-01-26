@@ -3,10 +3,13 @@ package com.personal.community.domain.user.controller;
 import com.personal.community.config.jwt.TokenService;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
+import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
 import com.personal.community.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,5 +41,11 @@ public class UserController {
         signinUserDto.setToken(tokenDto);
 
         return ResponseEntity.ok(signinUserDto);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<ResponseUserDto.UserInfoDto> getUserInfo(@PathVariable Long userId) {
+        UserInfoDto userInfo = userService.getUserInfo(userId);
+        return ResponseEntity.ok(userInfo);
     }
 }

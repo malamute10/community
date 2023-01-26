@@ -1,6 +1,7 @@
 package com.personal.community.domain.user.dto;
 
 import com.personal.community.common.CommunityEnum;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 public class ResponseUserDto {
@@ -24,5 +25,14 @@ public class ResponseUserDto {
             tokenDto.accessToken = accessToken;
             return tokenDto;
         }
+    }
+
+    @Data
+    public static class UserInfoDto {
+        private Long id;
+        private String email;
+        private String nickname;
+        private LocalDateTime createdDate;
+        private LocalDateTime lastLoginDate;
     }
 }
