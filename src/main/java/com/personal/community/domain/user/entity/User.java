@@ -2,6 +2,7 @@ package com.personal.community.domain.user.entity;
 
 
 import com.personal.community.common.CommunityEnum;
+import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,6 +50,9 @@ public class User {
 
     @OneToMany(mappedBy = "id")
     private List<Scrap> scrapList;
+
+    @OneToMany(mappedBy = "id")
+    private List<Comment> comments;
 
     @Builder
     public User(Long id, String email, String password, String nickname) {
