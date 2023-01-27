@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import com.personal.community.common.MapStruct;
+import com.personal.community.domain.post.dto.RequestCommentDto;
 import com.personal.community.domain.post.dto.ResponseCommentDto;
 import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
@@ -41,8 +42,8 @@ public class CommentServiceTest extends PostTest {
         User user = createUserForTest();
         Post post = createPostForTest(1L, user);
         List<Comment> commentList = List.of(
-                createCommentForTest(1L, user.getNickname(), user, post, "content1"),
-                createCommentForTest(2L, user.getNickname(), user, post, "content2"));
+                createCommentForTest(1L, user.getNickname(), user, post, "content1", null),
+                createCommentForTest(2L, user.getNickname(), user, post, "content2", null));
 
         given(commentRepository.findAllByUser(user)).willReturn(commentList);
 
@@ -53,13 +54,36 @@ public class CommentServiceTest extends PostTest {
         assertThat(commentListDto.getCommentList().size()).isEqualTo(2);
     }
 
-    private Comment createCommentForTest(Long id, String author, User user, Post post, String content) {
-        return Comment.builder()
-                .id(id)
-                .author(author)
-                .user(user)
-                .post(post)
-                .content(content)
-                .build();
+    @Test
+    @DisplayName("댓글 작성 서비스 테스트")
+    void createComment() {
+        //given
+        User user = createUserForTest();
+        Post post = createPostForTest(1L, user);
+
+        RequestCommentDto.CreateCommentDto createCommentDto = new RequestCommentDto.CreateCommentDto();
+        createCommentDto.setComment("comment");
+
+        //when
+        commentService.createComment(createCommentDto, post, user, null);
+
+        //then
+    }
+
+    @Test
+    @DisplayName("대댓글 작성 서비스 테스트")
+    void createComment2() {
+        //given
+        User user = createUserForTest();
+        Post post = createPostForTest(1L, user);
+        Comment parentComment = createCommentForTest(1L, user.getNickname(), user, post, "comment", null);
+
+        RequestCommentDto.CreateCommentDto createCommentDto = new RequestCommentDto.CreateCommentDto();
+        createCommentDto.setComment("comment");
+
+        //when
+        commentService.createComment(createCommentDto, post, user, parentComment);
+
+        //then
     }
 }

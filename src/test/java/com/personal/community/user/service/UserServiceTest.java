@@ -13,6 +13,7 @@ import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
 import com.personal.community.domain.user.service.UserService;
+import com.personal.community.user.UserTest;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +34,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Slf4j
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class UserServiceTest extends UserTest {
 
     @Mock
     UserRepository userRepository;
@@ -110,14 +111,5 @@ public class UserServiceTest {
         assertThat(userInfo.getId()).isEqualTo(1L);
         assertThat(userInfo.getEmail()).isEqualTo("malamute10@naver.com");
         assertThat(userInfo.getNickname()).isEqualTo("nickname");
-    }
-
-    private User createUserForTest(){
-        return User.builder()
-                .id(1L)
-                .email("malamute10@naver.com")
-                .password("password")
-                .nickname("nickname")
-                .build();
     }
 }

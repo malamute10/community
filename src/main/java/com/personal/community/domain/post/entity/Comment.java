@@ -45,11 +45,12 @@ public class Comment {
     private Comment parentComment;
 
     @Builder
-    public Comment(Long id,String author, User user, Post post, String content) {
+    public Comment(Long id, String author, User user, Post post, String content, Comment parentComment) {
         this.id = id;
         this.author = author;
         this.user = user;
         this.post = post;
         this.content = content;
+        this.parentComment = parentComment;
     }
 }

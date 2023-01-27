@@ -9,20 +9,37 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.personal.community.common.CommunityEnum;
+import com.personal.community.common.MapStruct;
+import com.personal.community.common.MapStructImpl;
 import com.personal.community.config.jwt.TokenService;
 import com.personal.community.config.security.SecurityConfig;
+import com.personal.community.domain.post.dto.ResponseCommentDto;
+import com.personal.community.domain.post.dto.ResponseCommentDto.CommentDto;
+import com.personal.community.domain.post.dto.ResponseCommentDto.CommentListDto;
+import com.personal.community.domain.post.entity.Comment;
+import com.personal.community.domain.post.entity.Post;
+import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.user.controller.UserController;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
+import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.service.UserService;
+import com.personal.community.user.UserTest;
 import java.time.LocalDateTime;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
@@ -38,7 +55,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class),
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OncePerRequestFilter.class)})
-public class UserControllerTest {
+public class UserControllerTest extends UserTest {
 
     @MockBean
     UserService userService;
@@ -48,6 +65,10 @@ public class UserControllerTest {
     MockMvc mvc;
     @Autowired
     ObjectMapper objectMapper;
+
+    @MockBean
+    CommentService commentService;
+    Logger log = LoggerFactory.getLogger(LoggerFactory.class);
 
 
     private final String baseUrl = "/api/v1/users";
@@ -117,5 +138,36 @@ public class UserControllerTest {
                                                    .contentType(MediaType.APPLICATION_JSON));
         //then
         result.andExpect(status().isOk()).andDo(print());
+    }
+
+    @Test
+    @DisplayName("작성 댓글목록 조회 컨트롤러 테스트")
+    void getMyComments() throws Exception {
+        //given
+        User user = createUserForTest();
+        given(userService.findUserById(user.getId())).willReturn(user);
+        given(commentService.findAllByUser(user)).willReturn(createCommentList(user));
+
+        //when
+        ResultActions result = mvc.perform(get(baseUrl + "/{userId}/comments", 1L)
+                                                   .contentType(MediaType.APPLICATION_JSON));
+        //then
+        result.andExpect(status().isOk()).andDo(print());
+    }
+
+    private CommentListDto createCommentList(User user){
+        CommentDto commentDto1 = new CommentDto();
+        commentDto1.setAuthor(user.getNickname());
+        commentDto1.setContent("comment1");
+        commentDto1.setCreatedDate(LocalDateTime.now());
+        commentDto1.setId(1L);
+
+        CommentDto commentDto2 = new CommentDto();
+        commentDto2.setAuthor(user.getNickname());
+        commentDto2.setContent("comment2");
+        commentDto2.setCreatedDate(LocalDateTime.now());
+        commentDto2.setId(2L);
+
+        return CommentListDto.ofCreate(List.of(commentDto1, commentDto2));
     }
 }

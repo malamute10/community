@@ -14,9 +14,12 @@ import com.personal.community.common.MapStruct;
 import com.personal.community.common.MapStructImpl;
 import com.personal.community.config.security.SecurityConfig;
 import com.personal.community.domain.post.contorller.PostController;
+import com.personal.community.domain.post.dto.RequestCommentDto;
+import com.personal.community.domain.post.dto.RequestCommentDto.CreateCommentDto;
 import com.personal.community.domain.post.dto.RequestPostDto;
 import com.personal.community.domain.post.dto.ResponsePostDto;
 import com.personal.community.domain.post.entity.Post;
+import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.service.UserService;
@@ -58,11 +61,12 @@ public class PostControllerTest extends PostTest {
     final String baseUrl = "/api/v1/posts";
     @Autowired
     MockMvc mvc;
-
     @MockBean
     PostService postService;
     @MockBean
     UserService userService;
+    @MockBean
+    CommentService commentService;
     @Autowired
     ObjectMapper objectMapper;
 
@@ -134,6 +138,29 @@ public class PostControllerTest extends PostTest {
         //when
         ResultActions result = mvc.perform(get(baseUrl)
                                                    .contentType("application/json;charset=UTF-8"));
+
+        //then
+        result.andExpect(status().isOk()).andDo(print());
+    }
+
+    @Test
+    @DisplayName("댓글 작성 controller 테스트")
+    void createComment() throws Exception {
+        //given
+        User user = createUserForTest();
+        Post post = createPostForTest(1L, user);
+
+        CreateCommentDto createCommentDto = new CreateCommentDto();
+        createCommentDto.setUserId(1L);
+        createCommentDto.setComment("comment");
+
+        given(userService.findUserById(1L)).willReturn(user);
+        given(postService.findById(1L)).willReturn(post);
+
+        //when
+        ResultActions result = mvc.perform(post(baseUrl + "/{postId}/comments", 1L)
+                                                   .contentType(MediaType.APPLICATION_JSON)
+                                                   .content(objectMapper.writeValueAsString(createCommentDto)));
 
         //then
         result.andExpect(status().isOk()).andDo(print());

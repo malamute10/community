@@ -1,9 +1,13 @@
 package com.personal.community.domain.user.controller;
 
 import com.personal.community.config.jwt.TokenService;
+import com.personal.community.domain.post.dto.ResponseCommentDto;
+import com.personal.community.domain.post.dto.ResponseCommentDto.CommentListDto;
+import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
+import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ public class UserController {
 
     private final UserService userService;
     private final TokenService tokenService;
+    private final CommentService commentService;
 
     @PostMapping("/signup")
     public ResponseEntity<Object> signupUser(@Valid @RequestBody RequestUserDto.UserSignupDto userSignupDto) {
@@ -47,5 +52,13 @@ public class UserController {
     public ResponseEntity<ResponseUserDto.UserInfoDto> getUserInfo(@PathVariable Long userId) {
         UserInfoDto userInfo = userService.getUserInfo(userId);
         return ResponseEntity.ok(userInfo);
+    }
+
+    @GetMapping("/{userId}/comments")
+    public ResponseEntity<ResponseCommentDto.CommentListDto> getCommentsByUser(@PathVariable Long userId) {
+        User user = userService.findUserById(userId);
+        CommentListDto commentList = commentService.findAllByUser(user);
+
+        return ResponseEntity.ok(commentList);
     }
 }
