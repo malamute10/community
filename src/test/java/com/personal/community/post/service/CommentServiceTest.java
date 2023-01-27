@@ -13,6 +13,7 @@ import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.post.PostTest;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -86,4 +87,19 @@ public class CommentServiceTest extends PostTest {
 
         //then
     }
+
+    @Test
+    @DisplayName("댓글 삭제 서비스 테스트")
+    void deleteComment() {
+        //given
+        User user = createUserForTest();
+        Post post = createPostForTest(1L, user);
+        Comment comment = createCommentForTest(1L, user.getNickname(), user, post, "comment", null);
+        given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
+        //when
+        commentService.deleteById(1L, user);
+
+        //then
+    }
+
 }

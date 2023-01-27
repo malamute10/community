@@ -1,5 +1,9 @@
 package com.personal.community.domain.post.entity;
 
+import com.personal.community.common.CommunityEnum;
+import com.personal.community.common.CommunityEnum.CommentStatus;
+import com.personal.community.config.exception.CommunityException;
+import com.personal.community.config.exception.ExceptionEnum;
 import com.personal.community.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,11 +14,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
+@Getter
 @Entity
 @NoArgsConstructor
 public class Comment {
@@ -26,6 +33,8 @@ public class Comment {
     private String author;
     @Column(name = "content")
     private String content;
+    @Column(name = "status")
+    private CommunityEnum.CommentStatus status;
 
     @CreatedDate
     @Column(name = "created_date")
@@ -38,7 +47,7 @@ public class Comment {
     private Post post;
 
     @OneToMany(mappedBy = "id")
-    private List<Comment> childComments;
+    private List<Comment> childComments = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "comment_id", referencedColumnName = "id")
@@ -52,5 +61,16 @@ public class Comment {
         this.post = post;
         this.content = content;
         this.parentComment = parentComment;
+        this.status = CommentStatus.EXISTS;
+    }
+
+    public boolean delete(User user) {
+        if(!this.user.getId().equals(user.getId())){
+            throw CommunityException.of(ExceptionEnum.UNAUTHORIZED, "해당 댓글을 삭제할 권한이 없습니다.");
+        }
+
+        this.user = null;
+        this.status = CommentStatus.DELETED;
+        return this.childComments.iterator().hasNext();
     }
 }

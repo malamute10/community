@@ -39,4 +39,12 @@ public class CommentService {
         return commentRepository.findById(commentId).orElseThrow(
                 () -> CommunityException.of(ExceptionEnum.NOT_FOUND, "해당 댓글을 찾을 수 없습니다."));
     }
+
+    public void deleteById(Long commentId, User user) {
+        Comment comment = this.findById(commentId);
+        boolean hasChildComment = comment.delete(user);
+        if(!hasChildComment) {
+            commentRepository.delete(comment);
+        }
+    }
 }

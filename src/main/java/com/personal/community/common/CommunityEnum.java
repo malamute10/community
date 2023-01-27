@@ -12,4 +12,9 @@ public class CommunityEnum {
         ADMIN,
         USER
     }
+
+    public enum CommentStatus {
+        EXISTS,
+        DELETED
+    }
 }
