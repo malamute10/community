@@ -34,7 +34,7 @@ public class PostService {
         return post;
     }
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     public List<Post> findAll() {
         return postRepository.findAll();
     }
@@ -44,10 +44,12 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
+    @Transactional(readOnly = true)
     public Page<Post> findAllPagination(Pageable pageable) {
         return postRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
     public Page<Post> findAllByUser(User user, Pageable pageable) {
         return postRepository.findAllByUserOrderByCreatedDateDesc(user, pageable);
     }

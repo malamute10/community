@@ -60,10 +60,12 @@ public class UserService {
         return mapper.userToSigninDto(user);
     }
 
+    @Transactional(readOnly = true)
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
+    @Transactional(readOnly = true)
     public UserInfoDto getUserInfo(Long id) {
         User user = this.findUserById(id);
         return mapper.userToUserInfoDto(user);
@@ -83,6 +85,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     public List<Post> findScrapsByUserId(Long id, Pageable pageable) {
         User user = this.findUserById(id);
 

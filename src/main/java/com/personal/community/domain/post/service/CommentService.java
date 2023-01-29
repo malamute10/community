@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,10 +24,12 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MapStruct mapper;
 
+    @Transactional(readOnly = true)
     public Page<Comment> findAllByUser(User user, Pageable pageable) {
         return commentRepository.findAllByUser(user, pageable);
     }
 
+    @Transactional
     public void createComment(RequestCommentDto.CreateCommentDto createCommentDto, Post post, User user, Comment parentComment){
         Comment comment = Comment.builder().author(user.getNickname())
                 .content(createCommentDto.getComment()).user(user).post(post)
@@ -35,11 +38,12 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    @Transactional(readOnly = true)
     public Comment findById(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(
                 () -> CommunityException.of(ExceptionEnum.NOT_FOUND, "해당 댓글을 찾을 수 없습니다."));
     }
-
+    @Transactional
     public void deleteById(Long commentId, User user) {
         Comment comment = this.findById(commentId);
         boolean hasChildComment = comment.delete(user);
