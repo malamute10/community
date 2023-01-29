@@ -103,8 +103,8 @@ public class UserControllerTest extends UserTest {
         UserSignupDto userSignupDto = new UserSignupDto();
         userSignupDto.setEmail("email@gmail.com");
         userSignupDto.setNickname("nickname");
-        userSignupDto.setPassword("password12");
-        userSignupDto.setConfirmPassword("password12");
+        userSignupDto.setPassword("!password12");
+        userSignupDto.setConfirmPassword("!password12");
 
         //when
         ResultActions result = mvc.perform(post(baseUrl + "/signup")

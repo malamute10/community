@@ -52,7 +52,8 @@ public class PostRepositoryTest extends PostTest {
     void delete(){
         //given
         User user = this.createUserForTest();
-        Post post = this.createPostForTest(null, user);
+        User savedUser = userRepository.save(user);
+        Post post = this.createPostForTest(1L, savedUser);
         Post savedPost = postRepository.save(post);
 
         //when
