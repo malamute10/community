@@ -8,11 +8,13 @@ import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
+import com.personal.community.domain.user.dto.ResponseUserDto.MyPostDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.ScrapDto;
 import com.personal.community.domain.user.entity.User;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
@@ -37,5 +39,11 @@ public interface MapStruct {
     @Mapping(source = "id", target = "postId")
     ScrapDto postToScrapDto(Post post);
 
-    List<PostDto> postToPostDto(List<Post> content);
+    List<PostDto> postToPostDto(List<Post> postList);
+
+    List<MyPostDto> postToMyPostDto(List<Post> postList);
+
+    @Mapping(source = "id", target = "postId")
+    @Mapping(target = "commentCount", expression = "java((long) post.getComments().size())")
+    MyPostDto postToMyPostDto(Post post);
 }

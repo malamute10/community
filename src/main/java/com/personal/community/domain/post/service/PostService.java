@@ -30,7 +30,6 @@ public class PostService {
     @Transactional
     public Post findById(Long postId){
         Post post = postRepository.findById(postId).orElseThrow(RuntimeException::new);
-
         post.plusView();
         return post;
     }
@@ -47,5 +46,9 @@ public class PostService {
 
     public Page<Post> findAllPagination(Pageable pageable) {
         return postRepository.findAll(pageable);
+    }
+
+    public Page<Post> findAllByUser(User user, Pageable pageable) {
+        return postRepository.findAllByUserOrderByCreatedDateDesc(user, pageable);
     }
 }

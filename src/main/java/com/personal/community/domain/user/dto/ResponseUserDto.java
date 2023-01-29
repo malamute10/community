@@ -1,7 +1,9 @@
 package com.personal.community.domain.user.dto;
 
 import com.personal.community.common.CommunityEnum;
+import com.personal.community.common.Paging;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 
@@ -39,7 +41,7 @@ public class ResponseUserDto {
 
     @Data
     public static class ScrapListDto {
-        List<ScrapDto> scrapList;
+        private List<ScrapDto> scrapList;
 
         public static ScrapListDto ofCreate(List<ScrapDto> scrapList) {
             ScrapListDto scrapListDto = new ScrapListDto();
@@ -53,5 +55,27 @@ public class ResponseUserDto {
         private Long postId;
         private String author;
         private String title;
+    }
+
+    @Data
+    public static class MyPostListDto {
+        private List<MyPostDto> myPostList = new ArrayList<>();
+        private Paging paging;
+
+        public static MyPostListDto ofCreate(List<MyPostDto> myPostList, Paging paging) {
+            MyPostListDto myPostListDto = new MyPostListDto();
+            myPostListDto.myPostList = myPostList;
+            myPostListDto.paging = paging;
+            return myPostListDto;
+        }
+    }
+
+    @Data
+    public static class MyPostDto {
+        private Long postId;
+        private String title;
+        private Long view;
+        private Long commentCount;
+        private LocalDateTime createdDate;
     }
 }

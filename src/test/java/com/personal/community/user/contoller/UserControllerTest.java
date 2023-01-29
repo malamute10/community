@@ -249,4 +249,34 @@ public class UserControllerTest extends UserTest {
         //then
         result.andExpect(status().isOk()).andDo(print());
     }
+
+    @Test
+    @DisplayName("작성글 조회 컨트롤러 테스트")
+    void findMyPosts() throws Exception {
+        //given
+        User user = createUserForTest();
+        Pageable pageable = PageRequest.of(0, 5);
+
+        List<Post> postList = new ArrayList<>();
+        for(long i = 1L; i<=5L; i++) {
+            Post post = createPostForTest(i, user);
+            if(i%2 == 0) {
+                post.addComment(createCommentForTest(i, user.getNickname(), user, post, "comment" + i, null));
+            }
+            postList.add(post);
+        }
+        Page<Post> postPage = new PageImpl<>(postList, pageable, postList.size());
+
+        given(userService.findUserById(user.getId())).willReturn(user);
+        given(postService.findAllByUser(user, pageable)).willReturn(postPage);
+
+        //when
+        ResultActions result = mvc.perform(get(baseUrl + "/{userId}/posts", 1L)
+                                                   .contentType(MediaType.APPLICATION_JSON)
+                                                   .param("page", "1")
+                                                   .param("size", "5"));
+
+        //then
+        result.andExpect(status().isOk()).andDo(print());
+    }
 }

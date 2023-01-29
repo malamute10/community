@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -66,7 +67,7 @@ public class    Post {
     private User user;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Post(Long id, String title, String content, String author, CommunityEnum.PostType type, User user) {
@@ -85,5 +86,9 @@ public class    Post {
 
     public void plusView(){
         this.view++;
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 }

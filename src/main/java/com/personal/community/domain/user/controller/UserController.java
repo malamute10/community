@@ -12,6 +12,8 @@ import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
+import com.personal.community.domain.user.dto.ResponseUserDto.MyPostDto;
+import com.personal.community.domain.user.dto.ResponseUserDto.MyPostListDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.ScrapDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.ScrapListDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
@@ -108,5 +110,18 @@ public class UserController {
         List<ScrapDto> scrapList = mapper.postToScrapDto(pagingScraps);
 
         return ResponseEntity.ok(ScrapListDto.ofCreate(scrapList));
+    }
+
+    @GetMapping("/{userId}/posts")
+    public ResponseEntity<ResponseUserDto.MyPostListDto> findMyPosts(@PathVariable Long userId,
+                                                                     @RequestParam Integer page,
+                                                                     @RequestParam Integer size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        User user = userService.findUserById(userId);
+        Page<Post> postPage = postService.findAllByUser(user, pageable);
+        List<MyPostDto> myPostDtoList = mapper.postToMyPostDto(postPage.getContent());
+        Paging paging = Paging.of(page, size, postPage.getTotalElements());
+
+        return ResponseEntity.ok(MyPostListDto.ofCreate(myPostDtoList, paging));
     }
 }
