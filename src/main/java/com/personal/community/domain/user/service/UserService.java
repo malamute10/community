@@ -6,8 +6,6 @@ import com.personal.community.config.exception.ExceptionEnum;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
-import com.personal.community.domain.user.dto.ResponseUserDto.ScrapDto;
-import com.personal.community.domain.user.dto.ResponseUserDto.ScrapListDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
@@ -37,7 +35,7 @@ public class UserService {
 
     @Transactional
     public void signup(RequestUserDto.UserSignupDto userSignupDto) {
-        User user = mapper.convertDtoToEntity(userSignupDto);
+        User user = mapper.signupDtoToUser(userSignupDto);
         Optional<User> optionalUser = this.findUserByEmail(user.getEmail());
 
         if(optionalUser.isPresent()) {
@@ -59,7 +57,7 @@ public class UserService {
         }
         user.signin();
 
-        return mapper.convertEntityToDto(user);
+        return mapper.userToSigninDto(user);
     }
 
     public Optional<User> findUserByEmail(String email) {
@@ -68,7 +66,7 @@ public class UserService {
 
     public UserInfoDto getUserInfo(Long id) {
         User user = this.findUserById(id);
-        return mapper.convertUserToUserInfoDto(user);
+        return mapper.userToUserInfoDto(user);
     }
 
     @Transactional

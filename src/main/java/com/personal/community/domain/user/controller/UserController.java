@@ -96,7 +96,7 @@ public class UserController {
                                                                       @RequestParam Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         List<Post> pagingScraps = userService.findScrapsByUserId(userId, pageable);
-        List<ScrapDto> scrapList = mapper.convertPostToScrapDto(pagingScraps);
+        List<ScrapDto> scrapList = mapper.postToScrapDto(pagingScraps);
 
         return ResponseEntity.ok(ScrapListDto.ofCreate(scrapList));
     }

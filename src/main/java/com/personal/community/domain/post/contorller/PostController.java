@@ -17,7 +17,6 @@ import com.personal.community.domain.user.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -54,7 +52,7 @@ public class PostController {
     @GetMapping("/{postId}")
     public ResponseEntity<ResponsePostDto.PostDto> findPostById(@PathVariable Long postId){
         Post post = postService.findById(postId);
-        ResponsePostDto.PostDto postDto = mapper.convertEntityToDto(post);
+        ResponsePostDto.PostDto postDto = mapper.postToPostDto(post);
         return ResponseEntity.ok(postDto);
     }
 
@@ -69,7 +67,7 @@ public class PostController {
                                                @RequestParam Integer size){
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Post> postList = postService.findAllPagination(pageable);
-        List<PostDto> postDtoList = mapper.convertPostToPostDto(postList.getContent());
+        List<PostDto> postDtoList = mapper.postToPostDto(postList.getContent());
         Paging paging = Paging.of(page, size, postList.getTotalElements());
 
         return ResponseEntity.ok(PostDtoList.ofCreate(postDtoList, paging));

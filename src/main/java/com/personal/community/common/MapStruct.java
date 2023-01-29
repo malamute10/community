@@ -2,7 +2,6 @@ package com.personal.community.common;
 
 import com.personal.community.domain.post.dto.RequestPostDto;
 import com.personal.community.domain.post.dto.ResponseCommentDto.CommentDto;
-import com.personal.community.domain.post.dto.ResponseCommentDto.CommentListDto;
 import com.personal.community.domain.post.dto.ResponsePostDto;
 import com.personal.community.domain.post.dto.ResponsePostDto.PostDto;
 import com.personal.community.domain.post.entity.Comment;
@@ -14,7 +13,6 @@ import com.personal.community.domain.user.entity.User;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
@@ -25,21 +23,19 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface MapStruct {
 
-    Post convertDtoToEntity(RequestPostDto.CreatePostDto createPostDto);
-    User convertDtoToEntity(RequestUserDto.UserSignupDto userSignupDto);
+    Post createPostDtoToPost(RequestPostDto.CreatePostDto createPostDto);
+    User signupDtoToUser(RequestUserDto.UserSignupDto userSignupDto);
 
-    ResponsePostDto.PostDto convertEntityToDto(Post post);
+    ResponsePostDto.PostDto postToPostDto(Post post);
 
-    List<ResponsePostDto.PostDto> convertEntityToDto(List<Post> post);
+    ResponseUserDto.SigninUserDto userToSigninDto(User user);
 
-    ResponseUserDto.SigninUserDto convertEntityToDto(User user);
+    ResponseUserDto.UserInfoDto userToUserInfoDto(User user);
+    List<CommentDto> commentToCommentDto(List<Comment> commentList);
 
-    ResponseUserDto.UserInfoDto convertUserToUserInfoDto(User user);
-    List<CommentDto> convertEntityListToDto(List<Comment> commentList);
-
-    List<ScrapDto> convertPostToScrapDto(List<Post> scrapList);
+    List<ScrapDto> postToScrapDto(List<Post> scrapList);
     @Mapping(source = "id", target = "postId")
-    ScrapDto convertPostToScrapDto(Post post);
+    ScrapDto postToScrapDto(Post post);
 
-    List<PostDto> convertPostToPostDto(List<Post> content);
+    List<PostDto> postToPostDto(List<Post> content);
 }

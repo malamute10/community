@@ -23,7 +23,7 @@ public class CommentService {
 
     public CommentListDto findAllByUser(User user) {
         List<Comment> commentList = commentRepository.findAllByUser(user);
-        List<CommentDto> commentDtos = mapper.convertEntityListToDto(commentList);
+        List<CommentDto> commentDtos = mapper.commentToCommentDto(commentList);
         return CommentListDto.ofCreate(commentDtos);
     }
 
