@@ -14,6 +14,7 @@ import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
 import com.personal.community.domain.user.service.UserService;
 import com.personal.community.user.UserTest;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -24,8 +25,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 @Slf4j
 @ActiveProfiles("test")
@@ -121,5 +125,41 @@ public class UserServiceTest extends UserTest {
         userService.addScrap(user.getId(), post);
 
         //then
+    }
+
+    @Test
+    @DisplayName("스크랩 삭제 서비스 테스트")
+    void deleteScrap() {
+        //given
+        User user = createUserForTest();
+        Post post = createPostForTest(1L, user);
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        //when
+        userService.deleteScrap(user.getId(), post);
+
+        //then
+    }
+
+    @Test
+    @DisplayName("스크랩 조회 서비스 테스트")
+    void findScraps() {
+        //given
+        User user = createUserForTest();
+
+        for(long i=1L; i<=10; i++) {
+            user.addScrap(createPostForTest(i, user));
+        }
+
+        Pageable pageable = PageRequest.of(0, 3);
+
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        //when
+        List<Post> scrapsByUserId = userService.findScrapsByUserId(user.getId(), pageable);
+
+        //then
+        assertThat(scrapsByUserId.size()).isEqualTo(3);
+        assertThat(scrapsByUserId.get(1).getId()).isEqualTo(2L);
     }
 }

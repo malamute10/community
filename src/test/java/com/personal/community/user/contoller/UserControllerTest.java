@@ -2,6 +2,7 @@ package com.personal.community.user.contoller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -9,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.personal.community.common.CommunityEnum;
+import com.personal.community.common.CommunityEnum.UserRole;
 import com.personal.community.common.MapStruct;
 import com.personal.community.common.MapStructImpl;
 import com.personal.community.config.jwt.TokenService;
@@ -22,13 +24,18 @@ import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.controller.UserController;
 import com.personal.community.domain.user.dto.RequestUserDto;
+import com.personal.community.domain.user.dto.RequestUserDto.UserSigninDto;
+import com.personal.community.domain.user.dto.RequestUserDto.UserSignupDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
+import com.personal.community.domain.user.dto.ResponseUserDto.SigninUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.service.UserService;
 import com.personal.community.user.UserTest;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,20 +50,28 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.MultiValueMapAdapter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @ActiveProfiles("test")
 @AutoConfigureMockMvc(addFilters = false)
+@Import(MapStructImpl.class)
 @WebMvcTest(controllers = UserController.class,
         excludeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class),
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OncePerRequestFilter.class)})
+                @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class),
+                @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OncePerRequestFilter.class)})
 public class UserControllerTest extends UserTest {
 
     @MockBean
@@ -70,8 +85,11 @@ public class UserControllerTest extends UserTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    MapStruct mapper;
     @MockBean
     CommentService commentService;
+
     Logger log = LoggerFactory.getLogger(LoggerFactory.class);
 
 
@@ -82,7 +100,7 @@ public class UserControllerTest extends UserTest {
     @WithMockUser(roles = "USER")
     void signup() throws Exception {
         //given
-        RequestUserDto.UserSignupDto userSignupDto = new RequestUserDto.UserSignupDto();
+        UserSignupDto userSignupDto = new UserSignupDto();
         userSignupDto.setEmail("email@gmail.com");
         userSignupDto.setNickname("nickname");
         userSignupDto.setPassword("password12");
@@ -102,15 +120,15 @@ public class UserControllerTest extends UserTest {
     @WithMockUser(roles = "USER")
     void signin() throws Exception {
         //given
-        RequestUserDto.UserSigninDto userSigninDto = new RequestUserDto.UserSigninDto();
+        UserSigninDto userSigninDto = new UserSigninDto();
         userSigninDto.setEmail("malamute10@naver.com");
         userSigninDto.setPassword("password");
 
-        ResponseUserDto.SigninUserDto signinUserDto = new ResponseUserDto.SigninUserDto();
+        SigninUserDto signinUserDto = new SigninUserDto();
         signinUserDto.setId(1L);
         signinUserDto.setEmail("malamute10@naver.com");
         signinUserDto.setNickname("malamute10");
-        signinUserDto.setUserRole(CommunityEnum.UserRole.USER);
+        signinUserDto.setUserRole(UserRole.USER);
 
         given(userService.signin(any(), any())).willReturn(signinUserDto);
         given(tokenService.generateAccessToken(any(), any())).willReturn("accessToken");
@@ -186,6 +204,48 @@ public class UserControllerTest extends UserTest {
 
         //when
         ResultActions result = mvc.perform(post(baseUrl + "/{userId}/scraps/{postId}", 1L, 1L)
+                                                   .contentType(MediaType.APPLICATION_JSON));
+        //then
+        result.andExpect(status().isOk()).andDo(print());
+    }
+
+    @Test
+    @DisplayName("스크랩 삭제 컨트롤러 테스트")
+    void deleteScrap() throws Exception {
+        //given
+        User user = createUserForTest();
+        Post post = createPostForTest(1L, user);
+
+        given(postService.findById(post.getId())).willReturn(post);
+
+        //when
+        ResultActions result = mvc.perform(delete(baseUrl + "/{userId}/scraps/{postId}", 1L, 1L)
+                                                   .contentType(MediaType.APPLICATION_JSON));
+        //then
+        result.andExpect(status().isOk()).andDo(print());
+    }
+
+    @Test
+    @DisplayName("스크랩 조회 컨트롤러 테스트")
+    void findScrap() throws Exception {
+        //given
+        User user = createUserForTest();
+        Pageable pageable = PageRequest.of(0, 5);
+
+        for(long i=1L; i<=10; i++) {
+            user.addScrap(createPostForTest(i, user));
+        }
+        long startIndex = pageable.getOffset();
+        List<Post> scrapList = user.getScrapList();
+        List<Post> pagingScraps = scrapList.subList((int) startIndex, (int) Math.min(scrapList.size(),
+                                                                              startIndex + pageable.getPageSize()));
+
+        given(userService.findScrapsByUserId(user.getId(), pageable)).willReturn(pagingScraps);
+
+        //when
+        ResultActions result = mvc.perform(get(baseUrl + "/{userId}/scraps", 1L)
+                                                   .param("page", "1")
+                                                   .param("size", "5")
                                                    .contentType(MediaType.APPLICATION_JSON));
         //then
         result.andExpect(status().isOk()).andDo(print());

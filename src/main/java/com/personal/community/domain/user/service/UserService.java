@@ -6,13 +6,16 @@ import com.personal.community.config.exception.ExceptionEnum;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
+import com.personal.community.domain.user.dto.ResponseUserDto.ScrapDto;
+import com.personal.community.domain.user.dto.ResponseUserDto.ScrapListDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
-import com.personal.community.domain.user.entity.Scrap;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,8 +74,22 @@ public class UserService {
     @Transactional
     public void addScrap(Long userId, Post post) {
         User user = this.findUserById(userId);
-        Scrap scrap = Scrap.ofCreate(user, post);
-        user.addScrap(scrap);
+        user.addScrap(post);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteScrap(Long userId, Post post) {
+        User user = this.findUserById(userId);
+        user.deleteScrap(post);
+        userRepository.save(user);
+    }
+
+    public List<Post> findScrapsByUserId(Long id, Pageable pageable) {
+        User user = this.findUserById(id);
+
+        long startIndex = pageable.getOffset();
+        List<Post> scrapList = user.getScrapList();
+        return scrapList.subList((int) startIndex, (int) Math.min(scrapList.size(), startIndex + pageable.getPageSize()));
     }
 }

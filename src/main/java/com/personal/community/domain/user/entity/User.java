@@ -10,6 +10,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,8 +53,13 @@ public class User {
     @OneToMany(mappedBy = "id")
     private List<Post> postList;
 
-    @OneToMany(mappedBy = "id")
-    private List<Scrap> scrapList = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name="scrap",
+            joinColumns= @JoinColumn(name="user_id", referencedColumnName="id"),
+            inverseJoinColumns= @JoinColumn(name="post_id", referencedColumnName="id")
+    )
+    private List<Post> scrapList = new ArrayList<>();
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     private List<Comment> comments;
@@ -83,7 +91,11 @@ public class User {
         this.lastLoginDate = LocalDateTime.now();
     }
 
-    public void addScrap(Scrap scrap) {
-        this.scrapList.add(scrap);
+    public void addScrap(Post post) {
+        this.scrapList.add(post);
+    }
+
+    public void deleteScrap(Post post) {
+        this.scrapList.remove(post);
     }
 }

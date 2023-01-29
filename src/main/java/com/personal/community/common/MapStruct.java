@@ -8,6 +8,7 @@ import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
+import com.personal.community.domain.user.dto.ResponseUserDto.ScrapDto;
 import com.personal.community.domain.user.entity.User;
 import java.util.List;
 import org.mapstruct.Mapper;
@@ -34,4 +35,8 @@ public interface MapStruct {
 
     ResponseUserDto.UserInfoDto convertUserToUserInfoDto(User user);
     List<CommentDto> convertEntityListToDto(List<Comment> commentList);
+
+    List<ScrapDto> convertPostToScrapDto(List<Post> scrapList);
+    @Mapping(source = "id", target = "postId")
+    ScrapDto convertPostToScrapDto(Post post);
 }

@@ -70,13 +70,6 @@ public class PostControllerTest extends PostTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        MapStruct getMapper() {
-            return new MapStructImpl();
-        }
-    }
 
     @Test
     @DisplayName("게시물 생성 controller 테스트")

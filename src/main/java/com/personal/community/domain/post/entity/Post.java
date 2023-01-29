@@ -31,7 +31,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post {
+public class    Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
