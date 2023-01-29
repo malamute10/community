@@ -33,6 +33,7 @@ import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.service.UserService;
 import com.personal.community.user.UserTest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -167,30 +170,26 @@ public class UserControllerTest extends UserTest {
     void getMyComments() throws Exception {
         //given
         User user = createUserForTest();
+        Post post = createPostForTest(1L, user);
+
+        List<Comment> commentList = new ArrayList<>();
+        for(long i=1L; i<=5L; i++) {
+            commentList.add(createCommentForTest(i, user.getNickname(), user, post, "content" + i, null));
+        }
+        PageRequest pageable = PageRequest.of(0, 5);
+        Page<Comment> commentPage = new PageImpl<>(commentList, pageable, commentList.size());
+
+
         given(userService.findUserById(user.getId())).willReturn(user);
-        given(commentService.findAllByUser(user)).willReturn(createCommentList(user));
+        given(commentService.findAllByUser(user, pageable)).willReturn(commentPage);
 
         //when
         ResultActions result = mvc.perform(get(baseUrl + "/{userId}/comments", 1L)
-                                                   .contentType(MediaType.APPLICATION_JSON));
+                                                   .contentType(MediaType.APPLICATION_JSON)
+                                                   .param("page", "1")
+                                                   .param("size", "5"));
         //then
         result.andExpect(status().isOk()).andDo(print());
-    }
-
-    private CommentListDto createCommentList(User user){
-        CommentDto commentDto1 = new CommentDto();
-        commentDto1.setAuthor(user.getNickname());
-        commentDto1.setContent("comment1");
-        commentDto1.setCreatedDate(LocalDateTime.now());
-        commentDto1.setId(1L);
-
-        CommentDto commentDto2 = new CommentDto();
-        commentDto2.setAuthor(user.getNickname());
-        commentDto2.setContent("comment2");
-        commentDto2.setCreatedDate(LocalDateTime.now());
-        commentDto2.setId(2L);
-
-        return CommentListDto.ofCreate(List.of(commentDto1, commentDto2));
     }
 
     @Test

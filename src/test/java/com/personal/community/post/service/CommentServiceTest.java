@@ -12,6 +12,7 @@ import com.personal.community.domain.post.repository.CommentRepository;
 import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.post.PostTest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +24,9 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -42,17 +46,20 @@ public class CommentServiceTest extends PostTest {
         //given
         User user = createUserForTest();
         Post post = createPostForTest(1L, user);
-        List<Comment> commentList = List.of(
-                createCommentForTest(1L, user.getNickname(), user, post, "content1", null),
-                createCommentForTest(2L, user.getNickname(), user, post, "content2", null));
+        List<Comment> commentList = new ArrayList<>();
+        for(long i=1L; i<=5L; i++) {
+            commentList.add(createCommentForTest(i, user.getNickname(), user, post, "content" + i, null));
+        }
+        PageRequest pageable = PageRequest.of(0, 5);
+        Page<Comment> commentPage = new PageImpl<>(commentList, pageable, commentList.size());
 
-        given(commentRepository.findAllByUser(user)).willReturn(commentList);
+        given(commentRepository.findAllByUser(user, pageable)).willReturn(commentPage);
 
         //when
-        ResponseCommentDto.CommentListDto commentListDto = commentService.findAllByUser(user);
+        Page<Comment> commentPageResult = commentService.findAllByUser(user, pageable);
 
         //then
-        assertThat(commentListDto.getCommentList().size()).isEqualTo(2);
+        assertThat(commentPageResult.getTotalElements()).isEqualTo(5);
     }
 
     @Test

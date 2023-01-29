@@ -12,6 +12,8 @@ import com.personal.community.domain.post.repository.CommentRepository;
 import com.personal.community.domain.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,10 +23,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MapStruct mapper;
 
-    public CommentListDto findAllByUser(User user) {
-        List<Comment> commentList = commentRepository.findAllByUser(user);
-        List<CommentDto> commentDtos = mapper.commentToCommentDto(commentList);
-        return CommentListDto.ofCreate(commentDtos);
+    public Page<Comment> findAllByUser(User user, Pageable pageable) {
+        return commentRepository.findAllByUser(user, pageable);
     }
 
     public void createComment(RequestCommentDto.CreateCommentDto createCommentDto, Post post, User user, Comment parentComment){

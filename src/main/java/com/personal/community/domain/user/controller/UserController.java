@@ -1,9 +1,12 @@
 package com.personal.community.domain.user.controller;
 
 import com.personal.community.common.MapStruct;
+import com.personal.community.common.Paging;
 import com.personal.community.config.jwt.TokenService;
 import com.personal.community.domain.post.dto.ResponseCommentDto;
+import com.personal.community.domain.post.dto.ResponseCommentDto.CommentDto;
 import com.personal.community.domain.post.dto.ResponseCommentDto.CommentListDto;
+import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.post.service.PostService;
@@ -18,6 +21,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -69,11 +73,16 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/comments")
-    public ResponseEntity<ResponseCommentDto.CommentListDto> getCommentsByUser(@PathVariable Long userId) {
+    public ResponseEntity<ResponseCommentDto.CommentListDto> getCommentsByUser(@PathVariable Long userId,
+                                                                               @RequestParam Integer page,
+                                                                               @RequestParam Integer size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
         User user = userService.findUserById(userId);
-        CommentListDto commentList = commentService.findAllByUser(user);
+        Page<Comment> commentPaging = commentService.findAllByUser(user, pageable);
+        List<CommentDto> commentList = mapper.commentToCommentDto(commentPaging.getContent());
+        Paging paging = Paging.of(page, size, commentPaging.getTotalElements());
 
-        return ResponseEntity.ok(commentList);
+        return ResponseEntity.ok(CommentListDto.ofCreate(commentList, paging));
     }
 
     @PostMapping("/{userId}/scraps/{postId}")
