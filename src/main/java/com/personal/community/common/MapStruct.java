@@ -4,6 +4,7 @@ import com.personal.community.domain.post.dto.RequestPostDto;
 import com.personal.community.domain.post.dto.ResponseCommentDto.CommentDto;
 import com.personal.community.domain.post.dto.ResponseCommentDto.CommentListDto;
 import com.personal.community.domain.post.dto.ResponsePostDto;
+import com.personal.community.domain.post.dto.ResponsePostDto.PostDto;
 import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.user.dto.RequestUserDto;
@@ -39,4 +40,6 @@ public interface MapStruct {
     List<ScrapDto> convertPostToScrapDto(List<Post> scrapList);
     @Mapping(source = "id", target = "postId")
     ScrapDto convertPostToScrapDto(Post post);
+
+    List<PostDto> convertPostToPostDto(List<Post> content);
 }

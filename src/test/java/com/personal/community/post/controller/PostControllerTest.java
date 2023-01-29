@@ -26,12 +26,15 @@ import com.personal.community.domain.user.service.UserService;
 import com.personal.community.post.PostTest;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -41,6 +44,10 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -51,6 +58,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 
 @ActiveProfiles("test")
+@Import(MapStructImpl.class)
 @AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(controllers = PostController.class,
         excludeFilters = {
@@ -69,6 +77,7 @@ public class PostControllerTest extends PostTest {
     CommentService commentService;
     @Autowired
     ObjectMapper objectMapper;
+    Logger log = LoggerFactory.getLogger(Logger.class);
 
 
     @Test
@@ -105,8 +114,6 @@ public class PostControllerTest extends PostTest {
 
         given(postService.findById(any())).willReturn(post);
 
-
-
         //when
         ResultActions result = mvc.perform(get(baseUrl + "/{postId}", post.getId())
                                                    .contentType("application/json;charset=UTF-8"));
@@ -120,17 +127,21 @@ public class PostControllerTest extends PostTest {
     void test3() throws Exception {
         //given
         User user = createUserForTest();
-        Post post1 = createPostForTest(1L, user);
-        Post post2 = createPostForTest(2L, user);
-        List<Post> postList = new ArrayList<>();
-        postList.add(post1);
-        postList.add(post2);
 
-        given(postService.findAll()).willReturn(postList);
+        List<Post> postList = new ArrayList<>();
+        for(long i=1L; i<=5L; i++) {
+            postList.add(createPostForTest(i, user));
+        }
+        PageRequest pageable = PageRequest.of(0, 5);
+        Page<Post> postPage = new PageImpl<>(postList, pageable, postList.size());
+
+        given(postService.findAllPagination(pageable)).willReturn(postPage);
 
         //when
         ResultActions result = mvc.perform(get(baseUrl)
-                                                   .contentType("application/json;charset=UTF-8"));
+                                                   .contentType("application/json;charset=UTF-8")
+                                                   .param("page", "1")
+                                                   .param("size", "5"));
 
         //then
         result.andExpect(status().isOk()).andDo(print());
