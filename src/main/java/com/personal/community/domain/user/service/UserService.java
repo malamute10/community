@@ -3,9 +3,11 @@ package com.personal.community.domain.user.service;
 import com.personal.community.common.MapStruct;
 import com.personal.community.config.exception.CommunityException;
 import com.personal.community.config.exception.ExceptionEnum;
+import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
+import com.personal.community.domain.user.entity.Scrap;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
 import java.util.Optional;
@@ -64,5 +66,13 @@ public class UserService {
     public UserInfoDto getUserInfo(Long id) {
         User user = this.findUserById(id);
         return mapper.convertUserToUserInfoDto(user);
+    }
+
+    @Transactional
+    public void addScrap(Long userId, Post post) {
+        User user = this.findUserById(userId);
+        Scrap scrap = Scrap.ofCreate(user, post);
+        user.addScrap(scrap);
+        userRepository.save(user);
     }
 }

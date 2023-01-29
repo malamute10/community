@@ -19,6 +19,7 @@ import com.personal.community.domain.post.dto.ResponseCommentDto.CommentListDto;
 import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.service.CommentService;
+import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.controller.UserController;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
@@ -31,6 +32,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,8 @@ public class UserControllerTest extends UserTest {
 
     @MockBean
     UserService userService;
+    @MockBean
+    PostService postService;
     @MockBean
     TokenService tokenService;
     @Autowired
@@ -169,5 +173,21 @@ public class UserControllerTest extends UserTest {
         commentDto2.setId(2L);
 
         return CommentListDto.ofCreate(List.of(commentDto1, commentDto2));
+    }
+
+    @Test
+    @DisplayName("스크랩 추가 컨트롤러 테스트")
+    void addScrap() throws Exception {
+        //given
+        User user = createUserForTest();
+        Post post = createPostForTest(1L, user);
+
+        given(postService.findById(post.getId())).willReturn(post);
+
+        //when
+        ResultActions result = mvc.perform(post(baseUrl + "/{userId}/scraps/{postId}", 1L, 1L)
+                                                   .contentType(MediaType.APPLICATION_JSON));
+        //then
+        result.andExpect(status().isOk()).andDo(print());
     }
 }

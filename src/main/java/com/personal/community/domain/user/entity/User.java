@@ -4,6 +4,7 @@ package com.personal.community.domain.user.entity;
 import com.personal.community.common.CommunityEnum;
 import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,9 +51,9 @@ public class User {
     private List<Post> postList;
 
     @OneToMany(mappedBy = "id")
-    private List<Scrap> scrapList;
+    private List<Scrap> scrapList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @Builder
@@ -79,5 +81,9 @@ public class User {
 
     public void signin() {
         this.lastLoginDate = LocalDateTime.now();
+    }
+
+    public void addScrap(Scrap scrap) {
+        this.scrapList.add(scrap);
     }
 }

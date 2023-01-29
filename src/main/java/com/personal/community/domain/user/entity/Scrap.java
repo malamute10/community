@@ -29,4 +29,11 @@ public class Scrap {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;
+
+    public static Scrap ofCreate(User user, Post post) {
+        Scrap scrap = new Scrap();
+        scrap.user = user;
+        scrap.post = post;
+        return scrap;
+    }
 }

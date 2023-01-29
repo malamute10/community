@@ -3,7 +3,9 @@ package com.personal.community.domain.user.controller;
 import com.personal.community.config.jwt.TokenService;
 import com.personal.community.domain.post.dto.ResponseCommentDto;
 import com.personal.community.domain.post.dto.ResponseCommentDto.CommentListDto;
+import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.service.CommentService;
+import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
@@ -27,6 +29,7 @@ public class UserController {
     private final UserService userService;
     private final TokenService tokenService;
     private final CommentService commentService;
+    private final PostService postService;
 
     @PostMapping("/signup")
     public ResponseEntity<Object> signupUser(@Valid @RequestBody RequestUserDto.UserSignupDto userSignupDto) {
@@ -60,5 +63,13 @@ public class UserController {
         CommentListDto commentList = commentService.findAllByUser(user);
 
         return ResponseEntity.ok(commentList);
+    }
+
+    @PostMapping("/{userId}/scraps/{postId}")
+    public ResponseEntity<Object> addScrap(@PathVariable Long userId, @PathVariable Long postId) {
+
+        Post post = postService.findById(postId);
+        userService.addScrap(userId, post);
+        return ResponseEntity.ok().build();
     }
 }

@@ -6,7 +6,7 @@ import static org.mockito.BDDMockito.given;
 
 import com.personal.community.common.CommunityEnum;
 import com.personal.community.common.MapStruct;
-import com.personal.community.config.security.SecurityConfig;
+import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
@@ -16,7 +16,6 @@ import com.personal.community.domain.user.service.UserService;
 import com.personal.community.user.UserTest;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,9 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -111,5 +107,19 @@ public class UserServiceTest extends UserTest {
         assertThat(userInfo.getId()).isEqualTo(1L);
         assertThat(userInfo.getEmail()).isEqualTo("malamute10@naver.com");
         assertThat(userInfo.getNickname()).isEqualTo("nickname");
+    }
+
+    @Test
+    @DisplayName("스크랩 추가 서비스 테스트")
+    void createScrap() {
+        //given
+        User user = createUserForTest();
+        Post post = createPostForTest(1L, user);
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        //when
+        userService.addScrap(user.getId(), post);
+
+        //then
     }
 }
