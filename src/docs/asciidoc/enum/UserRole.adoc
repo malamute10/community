@@ -1,0 +1,3 @@
+== UserRole
+
+include::{snippets}/enum-docs/custom-response-fields-UserRole.adoc[]

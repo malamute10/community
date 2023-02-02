@@ -1,11 +1,10 @@
-package com.personal.community.post.repository;
+package com.personal.community.unit_test.post.repository;
 
-import com.personal.community.common.CommunityEnum;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.repository.PostRepository;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
-import com.personal.community.post.PostTest;
+import com.personal.community.unit_test.post.PostTest;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;

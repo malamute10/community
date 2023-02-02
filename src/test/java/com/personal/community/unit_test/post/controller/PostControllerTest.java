@@ -1,4 +1,4 @@
-package com.personal.community.post.controller;
+package com.personal.community.unit_test.post.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -7,41 +7,29 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.personal.community.common.CommunityEnum;
-import com.personal.community.common.MapStruct;
 import com.personal.community.common.MapStructImpl;
 import com.personal.community.config.security.SecurityConfig;
 import com.personal.community.domain.post.contorller.PostController;
-import com.personal.community.domain.post.dto.RequestCommentDto;
 import com.personal.community.domain.post.dto.RequestCommentDto.CreateCommentDto;
 import com.personal.community.domain.post.dto.RequestPostDto;
-import com.personal.community.domain.post.dto.ResponsePostDto;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.service.UserService;
-import com.personal.community.post.PostTest;
+import com.personal.community.unit_test.post.PostTest;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;

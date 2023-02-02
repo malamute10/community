@@ -37,6 +37,7 @@ public class FilterExceptionHandler extends OncePerRequestFilter {
             jsonObject.addProperty("message", exceptionResponse.getMessage());
 
             response.setContentType("application/json;charset=UTF-8");
+            response.setStatus(exceptionResponse.getStatus().value());
             response.getWriter().write(jsonObject.toString());
         } catch (IOException e){
             e.printStackTrace();

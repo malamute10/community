@@ -1,4 +1,4 @@
-package com.personal.community.user.contoller;
+package com.personal.community.unit_test.user.contoller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -9,48 +9,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.personal.community.common.CommunityEnum;
 import com.personal.community.common.CommunityEnum.UserRole;
 import com.personal.community.common.MapStruct;
 import com.personal.community.common.MapStructImpl;
 import com.personal.community.config.jwt.TokenService;
 import com.personal.community.config.security.SecurityConfig;
-import com.personal.community.domain.post.dto.ResponseCommentDto;
-import com.personal.community.domain.post.dto.ResponseCommentDto.CommentDto;
-import com.personal.community.domain.post.dto.ResponseCommentDto.CommentListDto;
 import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.controller.UserController;
-import com.personal.community.domain.user.dto.RequestUserDto;
 import com.personal.community.domain.user.dto.RequestUserDto.UserSigninDto;
 import com.personal.community.domain.user.dto.RequestUserDto.UserSignupDto;
-import com.personal.community.domain.user.dto.ResponseUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.SigninUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.service.UserService;
-import com.personal.community.user.UserTest;
+import com.personal.community.unit_test.user.UserTest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
@@ -63,9 +49,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.MultiValueMapAdapter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @ActiveProfiles("test")

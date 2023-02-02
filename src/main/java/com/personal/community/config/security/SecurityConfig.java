@@ -24,11 +24,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf();
+        http.csrf().disable();
         http.cors()
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/post/errortest").permitAll()
                 .anyRequest().permitAll();
         http.securityContext((securityContext) -> securityContext
                         .requireExplicitSave(true));

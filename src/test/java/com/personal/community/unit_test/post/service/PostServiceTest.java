@@ -1,4 +1,4 @@
-package com.personal.community.post.service;
+package com.personal.community.unit_test.post.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,7 +11,7 @@ import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.repository.PostRepository;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
-import com.personal.community.post.PostTest;
+import com.personal.community.unit_test.post.PostTest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

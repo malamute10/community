@@ -8,9 +8,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.sql.Date;
 import java.time.LocalDate;
+import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.kerberos.EncryptionKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,16 +35,17 @@ public class TokenService {
     private String generateToken(String email, CommunityEnum.UserRole userRole, Long expirationTime) {
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("ROLE", userRole);
-        claims.setIssuedAt(Date.valueOf(LocalDate.now()));
-
+        claims.setIssuedAt(new Date(System.currentTimeMillis()));
 
         return Jwts.builder().setClaims(claims).setIssuedAt(claims.getIssuedAt())
-                .setExpiration(new Date(LocalDate.now().toEpochDay() + expirationTime))
-                .signWith(this.getKey(), SignatureAlgorithm.HS512).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(this.getKey()).compact();
     }
 
     public boolean verifyToken(String token) {
         try {
+            java.util.Date expiration = this.getClaims(token).getExpiration();
+            log.info("expiration:{} now:{}", expiration, new Date(System.currentTimeMillis()));
             return this.isExpired(token);
         } catch (ExpiredJwtException e) {
             throw CommunityException.of(ExceptionEnum.EXPIRED_TOKEN);
@@ -65,6 +69,6 @@ public class TokenService {
     }
 
     private Key getKey(){
-        return new EncryptionKey(SECRET.getBytes(), 0);
+        return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
 }

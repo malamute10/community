@@ -1,4 +1,4 @@
-package com.personal.community.post.controller;
+package com.personal.community.unit_test.post.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -9,7 +9,7 @@ import com.personal.community.config.security.SecurityConfig;
 import com.personal.community.domain.post.contorller.CommentController;
 import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.user.service.UserService;
-import com.personal.community.post.PostTest;
+import com.personal.community.unit_test.post.PostTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

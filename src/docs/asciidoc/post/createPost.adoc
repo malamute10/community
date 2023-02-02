@@ -1,0 +1,22 @@
+== CREATE POST
+
+=== [Request URL]
+....
+POST  /api/v1/posts/create
+....
+
+=== [Path Parameter]
+NONE
+
+=== [Request Param]
+NONE
+
+=== [Request Body]
+include::{snippets}/create-post/request-fields.adoc[]
+
+=== [HTTP Response]
+include::{snippets}/create-post/http-response.adoc[]
+
+=== [Response Fields]
+NONE
+

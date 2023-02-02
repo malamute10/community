@@ -1,4 +1,4 @@
-package com.personal.community.post;
+package com.personal.community.unit_test.post;
 
 import com.personal.community.common.CommunityEnum;
 import com.personal.community.domain.post.entity.Comment;

@@ -1,4 +1,4 @@
-package com.personal.community.user.service;
+package com.personal.community.unit_test.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,7 +13,7 @@ import com.personal.community.domain.user.dto.ResponseUserDto.UserInfoDto;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
 import com.personal.community.domain.user.service.UserService;
-import com.personal.community.user.UserTest;
+import com.personal.community.unit_test.user.UserTest;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;

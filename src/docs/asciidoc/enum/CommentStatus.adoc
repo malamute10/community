@@ -1,0 +1,3 @@
+== CommentStatus
+
+include::{snippets}/enum-docs/custom-response-fields-CommentStatus.adoc[]

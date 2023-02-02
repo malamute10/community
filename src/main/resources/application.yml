@@ -17,4 +17,4 @@ jwt:
   prefix: Bearer
   header: Authorization
   access-token: 7200000   #2시간
-  secret : community
+  secret : community_project_secret_key_Hong

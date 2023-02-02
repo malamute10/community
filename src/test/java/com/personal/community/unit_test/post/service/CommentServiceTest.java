@@ -1,17 +1,16 @@
-package com.personal.community.post.service;
+package com.personal.community.unit_test.post.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import com.personal.community.common.MapStruct;
 import com.personal.community.domain.post.dto.RequestCommentDto;
-import com.personal.community.domain.post.dto.ResponseCommentDto;
 import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.repository.CommentRepository;
 import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.user.entity.User;
-import com.personal.community.post.PostTest;
+import com.personal.community.unit_test.post.PostTest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +22,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;

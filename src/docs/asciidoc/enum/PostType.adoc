@@ -1,0 +1,3 @@
+== PostType
+
+include::{snippets}/enum-docs/custom-response-fields-PostType.adoc[]

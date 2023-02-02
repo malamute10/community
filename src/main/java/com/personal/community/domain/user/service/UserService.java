@@ -52,8 +52,8 @@ public class UserService {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> CommunityException.of(ExceptionEnum.NOT_FOUND, "아이디 또는 비밀번호를 확인해주세요."));
 
-        if(!passwordEncoder.matches(user.getPassword(), password)) {
-            throw CommunityException.of(ExceptionEnum.NOT_FOUND, "아이디 또는 비밀번호를 확인해주세요.");
+        if(!passwordEncoder.matches(password, user.getPassword())) {
+            throw CommunityException.of(ExceptionEnum.NOT_FOUND, "아이디 또는 비밀번호를 확인해주세요.2");
         }
         user.signin();
 
