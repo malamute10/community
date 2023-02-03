@@ -1,0 +1,22 @@
+== CREATE POST
+
+=== [Request URL]
+....
+GET  /api/v1/posts
+....
+
+=== [Path Parameter]
+NONE
+
+=== [Request Param]
+include::{snippets}/search-post/query-parameters.adoc[]
+
+=== [Request Body]
+NONE
+
+=== [HTTP Response]
+include::{snippets}/search-post/http-response.adoc[]
+
+=== [Response Fields]
+include::{snippets}/search-post/response-fields.adoc[]
+

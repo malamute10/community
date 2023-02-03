@@ -1,6 +1,7 @@
 package com.personal.community.domain.post.contorller;
 
 
+import com.personal.community.common.CommunityEnum.SearchTarget;
 import com.personal.community.common.MapStruct;
 import com.personal.community.common.Paging;
 import com.personal.community.domain.post.dto.RequestCommentDto.CreateCommentDto;
@@ -63,10 +64,12 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<PostDtoList> findAll(@RequestParam Integer page,
+    public ResponseEntity<PostDtoList> findAll(@RequestParam(required = false) SearchTarget searchTarget,
+                                               @RequestParam(required = false) String searchText,
+                                               @RequestParam Integer page,
                                                @RequestParam Integer size){
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Post> postList = postService.findAllPagination(pageable);
+        Page<Post> postList = postService.findAllPagination(searchTarget, searchText, pageable);
         List<PostDto> postDtoList = mapper.postToPostDto(postList.getContent());
         Paging paging = Paging.of(page, size, postList.getTotalElements());
 

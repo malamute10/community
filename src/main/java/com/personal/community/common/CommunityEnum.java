@@ -16,7 +16,6 @@ public class CommunityEnum {
         public String getName() {
             return this.name();
         }
-
         @Override
         public String getDescription() {
             return this.description;
@@ -28,13 +27,12 @@ public class CommunityEnum {
         ADMIN("관리자"),
         USER("유저");
 
-        private String description;
+        private final String description;
 
         @Override
         public String getName() {
             return this.name();
         }
-
         @Override
         public String getDescription() {
             return this.description;
@@ -46,13 +44,31 @@ public class CommunityEnum {
         EXISTS("보임"),
         DELETED("삭제됨");
 
-        private String description;
+        private final String description;
 
         @Override
         public String getName() {
             return this.name();
         }
+        @Override
+        public String getDescription() {
+            return this.description;
+        }
+    }
 
+    @AllArgsConstructor
+    public enum SearchTarget implements EnumType {
+        TITLE("제목"),
+        TITLE_CONTENT("제목 + 내용"),
+        CONTENT("내용"),
+        AUTHOR("작성자");
+
+        private final String description;
+
+        @Override
+        public String getName() {
+            return this.name();
+        }
         @Override
         public String getDescription() {
             return this.description;

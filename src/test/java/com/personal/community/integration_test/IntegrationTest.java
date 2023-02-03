@@ -5,7 +5,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.personal.community.common.CommunityEnum;
 import com.personal.community.config.RestDocsConfig;
+import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.repository.CommentRepository;
 import com.personal.community.domain.post.repository.PostRepository;
 import com.personal.community.domain.user.dto.RequestUserDto.UserSigninDto;

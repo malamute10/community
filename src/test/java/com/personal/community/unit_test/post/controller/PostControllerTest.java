@@ -123,7 +123,7 @@ public class PostControllerTest extends PostTest {
         PageRequest pageable = PageRequest.of(0, 5);
         Page<Post> postPage = new PageImpl<>(postList, pageable, postList.size());
 
-        given(postService.findAllPagination(pageable)).willReturn(postPage);
+        given(postService.findAllPagination(null, null, pageable)).willReturn(postPage);
 
         //when
         ResultActions result = mvc.perform(get(baseUrl)

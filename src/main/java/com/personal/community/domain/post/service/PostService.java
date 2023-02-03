@@ -1,5 +1,6 @@
 package com.personal.community.domain.post.service;
 
+import com.personal.community.common.CommunityEnum.SearchTarget;
 import com.personal.community.common.MapStruct;
 import com.personal.community.domain.post.dto.RequestPostDto;
 import com.personal.community.domain.post.entity.Post;
@@ -45,8 +46,8 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Post> findAllPagination(Pageable pageable) {
-        return postRepository.findAll(pageable);
+    public Page<Post> findAllPagination(SearchTarget searchTarget, String searchText, Pageable pageable) {
+        return postRepository.findAllBySearchAndPaging(searchTarget, searchText, pageable);
     }
 
     @Transactional(readOnly = true)
