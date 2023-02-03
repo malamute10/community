@@ -10,6 +10,7 @@ https://github.com/malamute10/community
 [[USER_API]]
 == USER API
 * link:/docs/user/signinUser.html[로그인]
+* link:/docs/user/signupUser.html[회원가입]
 
 [[POST_API]]
 == POST API

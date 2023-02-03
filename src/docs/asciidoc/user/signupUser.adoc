@@ -1,0 +1,22 @@
+== Signin User
+
+=== [Request URL]
+....
+POST  /api/v1/users/signup
+....
+
+=== [Path Parameter]
+NONE
+
+=== [Request Param]
+NONE
+
+=== [Request Body]
+include::{snippets}/signup/request-fields.adoc[]
+
+=== [HTTP Response]
+include::{snippets}/signup/http-response.adoc[]
+
+=== [Response Fields]
+NONE
+
