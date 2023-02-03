@@ -13,6 +13,8 @@ import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.repository.UserRepository;
 import com.personal.community.integration_test.IntegrationTest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -26,12 +28,14 @@ public class CreatePostTest extends IntegrationTest {
 
     @Autowired
     PostService postService;
-    @Autowired
-    UserRepository userRepository;
+
     Logger log = LoggerFactory.getLogger(Logger.class);
 
-    protected final String baseUrl = "/api/v1/posts";
-
+    @AfterEach
+    void clear() {
+        postRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("게시글 작성 테스트")
@@ -50,7 +54,7 @@ public class CreatePostTest extends IntegrationTest {
         createPostDto.setType(PostType.FREE_BOARD);
 
         //when
-        ResultActions resultAction = mvc.perform(post(baseUrl + "/create")
+        ResultActions resultAction = mvc.perform(post(postBaseUrl + "/create")
                                                          .param("userId", String.valueOf(savedUser.getId()))
                                                          .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                                                          .contentType(MediaType.APPLICATION_JSON)

@@ -6,17 +6,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.personal.community.config.RestDocsConfig;
-import com.personal.community.domain.user.dto.RequestUserDto;
+import com.personal.community.domain.post.repository.CommentRepository;
+import com.personal.community.domain.post.repository.PostRepository;
 import com.personal.community.domain.user.dto.RequestUserDto.UserSigninDto;
-import com.personal.community.domain.user.dto.ResponseUserDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.SigninUserDto;
 import com.personal.community.domain.user.entity.User;
+import com.personal.community.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -28,7 +28,6 @@ import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -48,7 +47,15 @@ public class IntegrationTest {
     protected MockMvc mvc;
     @Autowired
     protected RestDocumentationResultHandler restDocs;
+    @Autowired
+    protected UserRepository userRepository;
+    @Autowired
+    protected PostRepository postRepository;
+    @Autowired
+    protected CommentRepository commentRepository;
 
+    protected String userBaseUrl = "/api/v1/users";
+    protected String postBaseUrl = "/api/v1/posts";
     Logger log = LoggerFactory.getLogger(Logger.class);
 
     @BeforeEach
@@ -78,6 +85,10 @@ public class IntegrationTest {
 
     public User createUserForTest(String email, String password) {
         return User.ofCreate(email, passwordEncoder.encode(password), "nickname");
+    }
+
+    protected User saveUser(User user) {
+        return userRepository.save(user);
     }
 
 }
