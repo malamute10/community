@@ -15,6 +15,7 @@ import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.domain.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,8 +52,11 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ResponsePostDto.PostDto> findPostById(@PathVariable Long postId){
-        Post post = postService.findById(postId);
+    public ResponseEntity<ResponsePostDto.PostDto> findPostById(@PathVariable Long postId,
+                                                                HttpServletRequest request){
+        String ip = request.getRemoteAddr();
+        Post post = postService.viewPost(postId, ip);
+
         ResponsePostDto.PostDto postDto = mapper.postToPostDto(post);
         return ResponseEntity.ok(postDto);
     }

@@ -1,6 +1,7 @@
 package com.personal.community.unit_test.post.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -99,8 +100,9 @@ public class PostControllerTest extends PostTest {
         //given
         User user = createUserForTest();
         Post post = createPostForTest(1L, user);
+        post.plusView();
 
-        given(postService.findById(any())).willReturn(post);
+        given(postService.viewPost(any(), eq("127.0.0.1"))).willReturn(post);
 
         //when
         ResultActions result = mvc.perform(get(baseUrl + "/{postId}", post.getId())

@@ -2,14 +2,18 @@ package com.personal.community.unit_test.post.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 import com.personal.community.common.CommunityEnum;
 import com.personal.community.common.MapStruct;
 import com.personal.community.domain.post.dto.RequestPostDto;
 import com.personal.community.domain.post.entity.Post;
+import com.personal.community.domain.post.entity.View;
 import com.personal.community.domain.post.repository.PostRepository;
+import com.personal.community.domain.post.repository.ViewRepository;
 import com.personal.community.domain.post.service.PostService;
+import com.personal.community.domain.post.service.ViewService;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.unit_test.post.PostTest;
 import java.util.ArrayList;
@@ -23,6 +27,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -31,10 +36,10 @@ public class PostServiceTest extends PostTest {
 
     @Mock
     PostRepository postRepository;
-
     @InjectMocks
     PostService postService;
-
+    @Mock
+    ViewService viewService;
     @Spy
     MapStruct mapper = Mappers.getMapper(MapStruct.class);
 
@@ -64,14 +69,17 @@ public class PostServiceTest extends PostTest {
         //given
         User user = createUserForTest();
         Post post = createPostForTest(1L, user);
+        View view = View.ofCreate(post, "127.0.0.1");
         given(postRepository.findById(any())).willReturn(Optional.ofNullable(post));
+        given(viewService.findViewByPost(any(), eq("127.0.0.1"))).willReturn(view);
 
         //when
-        Post result = postService.findById(post.getId());
+        Post result = postService.viewPost(post.getId(), "127.0.0.1");
 
         //then
         assertThat(result.getId()).isEqualTo(post.getId());
         assertThat(result.getView()).isEqualTo(1);
+        assertThat(result.getViews().size()).isEqualTo(1);
     }
 
     @Test

@@ -12,6 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
@@ -69,6 +71,9 @@ public class    Post {
     @OneToMany(mappedBy = "id", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "id", cascade = CascadeType.REMOVE)
+    private List<View> views = new ArrayList<>();
+
     @Builder
     public Post(Long id, String title, String content, String author, CommunityEnum.PostType type, User user) {
         this.id = id;
@@ -90,5 +95,9 @@ public class    Post {
 
     public void addComment(Comment comment) {
         this.comments.add(comment);
+    }
+
+    public void addView(View view) {
+        this.views.add(view);
     }
 }
