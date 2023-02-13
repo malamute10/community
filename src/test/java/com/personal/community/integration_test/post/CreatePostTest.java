@@ -1,6 +1,5 @@
 package com.personal.community.integration_test.post;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -11,10 +10,8 @@ import com.personal.community.common.CommunityEnum.PostType;
 import com.personal.community.domain.post.dto.RequestPostDto.CreatePostDto;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
-import com.personal.community.domain.user.repository.UserRepository;
 import com.personal.community.integration_test.IntegrationTest;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -59,7 +56,6 @@ public class CreatePostTest extends IntegrationTest {
                                                          .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                                                          .contentType(MediaType.APPLICATION_JSON)
                                                          .content(objectMapper.writeValueAsString(createPostDto)));
-
         //then
         resultAction.andExpect(status().isOk())
                 .andDo(print())

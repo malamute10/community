@@ -9,7 +9,6 @@ plugins {
     id 'org.springframework.boot' version '3.0.1'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
-    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.personal'
@@ -21,7 +20,6 @@ configurations {
         extendsFrom annotationProcessor
     }
     asciidoctorExtensions
-    querydsl.extendsFrom compileClasspath
 }
 
 repositories {
@@ -48,8 +46,11 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.reflections:reflections:0.10.2'
+
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
 
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
@@ -100,30 +101,4 @@ bootJar {
 
 jar {
     enabled = false
-}
-
-def querydslDir = "$buildDir/generated/querydsl"
-
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
-}
-
-sourceSets {
-    main.java.srcDir querydslDir
-}
-
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
-}
-
-clean {
-    delete querydslDir
-}
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-    querydsl.extendsFrom compileClasspath
 }

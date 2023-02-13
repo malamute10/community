@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 public class ExceptionResponse {
     private HttpStatus status;
     private String message;
-
     public static ExceptionResponse ofCreate(CommunityException ex){
         ExceptionResponse exceptionResponse= new ExceptionResponse();
         exceptionResponse.status = ex.getStatus();
