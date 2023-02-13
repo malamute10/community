@@ -1,0 +1,22 @@
+== CREATE POST
+
+=== [Request URL]
+....
+Delete  /api/v1/posts/{postId}
+....
+
+=== [Path Parameter]
+include::{snippets}/delete-post/path-parameters.adoc[]
+
+=== [Request Param]
+NONE
+
+=== [Request Body]
+NONE
+
+=== [HTTP Response]
+include::{snippets}/delete-post/http-response.adoc[]
+
+=== [Response Fields]
+NONE
+
