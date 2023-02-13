@@ -1,0 +1,22 @@
+== CREATE POST
+
+=== [Request URL]
+....
+GET  /api/v1/posts/{postId}
+....
+
+=== [Path Parameter]
+include::{snippets}/create-comment/path-parameters.adoc[]
+
+=== [Request Param]
+NONE
+
+=== [Request Body]
+include::{snippets}/create-comment/request-fields.adoc[]
+
+=== [HTTP Response]
+include::{snippets}/create-comment/http-response.adoc[]
+
+=== [Response Fields]
+NONE
+

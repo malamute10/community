@@ -16,6 +16,7 @@ https://github.com/malamute10/community
 == POST API
 * link:/docs/post/createPost.html[게시물 생성]
 * link:/docs/post/searchPost.html[게시물 리스트 검색]
+* link:/docs/post/findPost.html[게시물 검색]
 
 [[ENUM]]
 == ENUM
