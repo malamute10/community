@@ -6,14 +6,10 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.personal.community.common.CommunityEnum;
 import com.personal.community.config.RestDocsConfig;
 import com.personal.community.domain.user.dto.RequestUserDto.UserSigninDto;
-import com.personal.community.domain.user.dto.ResponseUserDto.TokenDto;
 import com.personal.community.integration_test.IntegrationTest;
-import org.aspectj.lang.annotation.After;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
@@ -25,7 +21,7 @@ public class SigninUserTest extends IntegrationTest {
 
     @AfterEach
     void clear() {
-        userRepository.deleteAll();
+        deleteAllRepository();
     }
 
     @Test

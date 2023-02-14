@@ -29,8 +29,7 @@ public class CreateComment extends IntegrationTest {
 
     @AfterEach
     void clear() {
-        postRepository.deleteAll();
-        userRepository.deleteAll();
+        deleteAllRepository();
     }
 
     @Test

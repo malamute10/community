@@ -51,7 +51,7 @@ public class User {
     private LocalDateTime lastLoginDate;
 
     @OneToMany(mappedBy = "id")
-    private List<Post> postList;
+    private List<Post> postList = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -62,7 +62,7 @@ public class User {
     private List<Post> scrapList = new ArrayList<>();
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public User(Long id, String email, String password, String nickname) {

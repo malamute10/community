@@ -1,26 +1,20 @@
 package com.personal.community.integration_test.post;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.personal.community.common.CommunityEnum.PostType;
-import com.personal.community.domain.post.dto.RequestPostDto.CreatePostDto;
-import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
+import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.integration_test.IntegrationTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,13 +24,12 @@ public class DeletePostTest extends IntegrationTest {
 
     @Autowired
     PostService postService;
-
-    Logger log = LoggerFactory.getLogger(Logger.class);
+    @Autowired
+    CommentService commentService;
 
     @AfterEach
     void clear() {
-        postRepository.deleteAll();
-        userRepository.deleteAll();
+        deleteAllRepository();
     }
 
     @Test
@@ -55,20 +48,12 @@ public class DeletePostTest extends IntegrationTest {
                 .user(savedUser)
                 .type(PostType.FREE_BOARD)
                 .build();
-        postRepository.save(post);
-
-        Comment comment = Comment.builder()
-                .post(post)
-                .user(savedUser)
-                .author(savedUser.getNickname())
-                .content("댓글")
-                .build();
-        commentRepository.save(comment);
+        Post savedPost = postRepository.save(post);
 
         //when
-        ResultActions resultAction = mvc.perform(delete(postBaseUrl + "/{postId}", 1L)
-                                                         .contentType(MediaType.APPLICATION_JSON)
-                                                         .content(objectMapper.writeValueAsString(getToken(email, password))));
+        ResultActions resultAction = mvc.perform(delete(postBaseUrl + "/{postId}", savedPost.getId())
+                                                         .header(HttpHeaders.AUTHORIZATION, getToken(email, password))
+                                                         .contentType(MediaType.APPLICATION_JSON));
         //then
         resultAction.andExpect(status().isOk())
                 .andDo(print())

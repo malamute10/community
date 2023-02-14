@@ -3,11 +3,9 @@ package com.personal.community.integration_test.user;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.personal.community.config.RestDocsConfig;
-import com.personal.community.domain.user.dto.RequestUserDto.UserSigninDto;
 import com.personal.community.domain.user.dto.RequestUserDto.UserSignupDto;
 import com.personal.community.integration_test.IntegrationTest;
 import org.junit.jupiter.api.AfterEach;
@@ -22,7 +20,7 @@ public class SignupUserTest extends IntegrationTest {
 
     @AfterEach
     void clear() {
-        userRepository.deleteAll();
+        deleteAllRepository();
     }
 
     @Test

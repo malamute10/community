@@ -1,31 +1,22 @@
 package com.personal.community.integration_test.post;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.personal.community.common.CommunityEnum;
 import com.personal.community.common.CommunityEnum.PostType;
-import com.personal.community.domain.post.dto.RequestPostDto.CreatePostDto;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
 import com.personal.community.integration_test.IntegrationTest;
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -36,8 +27,7 @@ public class FindPostTest extends IntegrationTest {
 
     @AfterEach
     void clear() {
-        postRepository.deleteAll();
-        userRepository.deleteAll();
+        deleteAllRepository();
     }
 
     @Test
@@ -56,10 +46,11 @@ public class FindPostTest extends IntegrationTest {
                 .user(savedUser)
                 .type(PostType.FREE_BOARD)
                 .build();
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
+        log.info("설정 종료");
 
         //when
-        ResultActions resultAction = mvc.perform(get(postBaseUrl + "/{postId}", 1L)
+        ResultActions resultAction = mvc.perform(get(postBaseUrl + "/{postId}", savedPost.getId())
                                                          .contentType(MediaType.APPLICATION_JSON));
         //then
         resultAction.andExpect(status().isOk())

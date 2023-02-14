@@ -2,6 +2,8 @@ package com.personal.community.domain.post.service;
 
 import com.personal.community.common.CommunityEnum.SearchTarget;
 import com.personal.community.common.MapStruct;
+import com.personal.community.config.exception.CommunityException;
+import com.personal.community.config.exception.ExceptionEnum;
 import com.personal.community.domain.post.dto.RequestPostDto;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.entity.View;
@@ -10,11 +12,13 @@ import com.personal.community.domain.user.entity.User;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -34,7 +38,8 @@ public class PostService {
 
     @Transactional
     public Post findById(Long postId){
-        return postRepository.findById(postId).orElseThrow(RuntimeException::new);
+        return postRepository.findById(postId).orElseThrow(
+                () -> CommunityException.of(ExceptionEnum.NOT_FOUND, "게시물을 찾을 수 없습니다."));
     }
 
     @Transactional(readOnly = true)

@@ -30,8 +30,7 @@ public class CreatePostTest extends IntegrationTest {
 
     @AfterEach
     void clear() {
-        postRepository.deleteAll();
-        userRepository.deleteAll();
+        deleteAllRepository();
     }
 
     @Test

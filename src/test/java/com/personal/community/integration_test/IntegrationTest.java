@@ -5,11 +5,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.personal.community.common.CommunityEnum;
 import com.personal.community.config.RestDocsConfig;
-import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.repository.CommentRepository;
 import com.personal.community.domain.post.repository.PostRepository;
+import com.personal.community.domain.post.repository.ViewRepository;
 import com.personal.community.domain.user.dto.RequestUserDto.UserSigninDto;
 import com.personal.community.domain.user.dto.ResponseUserDto.SigninUserDto;
 import com.personal.community.domain.user.entity.User;
@@ -54,11 +53,13 @@ public class IntegrationTest {
     @Autowired
     protected PostRepository postRepository;
     @Autowired
+    protected ViewRepository viewRepository;
+    @Autowired
     protected CommentRepository commentRepository;
 
     protected String userBaseUrl = "/api/v1/users";
     protected String postBaseUrl = "/api/v1/posts";
-    Logger log = LoggerFactory.getLogger(Logger.class);
+    protected Logger log = LoggerFactory.getLogger(Logger.class);
 
     @BeforeEach
     void setUp(final WebApplicationContext context, final RestDocumentationContextProvider provider) {
@@ -93,4 +94,11 @@ public class IntegrationTest {
         return userRepository.save(user);
     }
 
+
+    protected void deleteAllRepository() {
+        commentRepository.deleteAll();
+        viewRepository.deleteAll();
+        postRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 }

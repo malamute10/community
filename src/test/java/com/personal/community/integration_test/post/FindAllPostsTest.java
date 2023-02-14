@@ -32,8 +32,7 @@ public class FindAllPostsTest extends IntegrationTest {
 
     @AfterEach
     void clear() {
-        postRepository.deleteAll();
-        userRepository.deleteAll();
+        deleteAllRepository();
     }
 
     @Test
