@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+community-mysql-conf/
+/community-mysql/
