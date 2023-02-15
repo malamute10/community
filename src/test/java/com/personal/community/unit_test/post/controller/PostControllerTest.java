@@ -3,6 +3,8 @@ package com.personal.community.unit_test.post.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -11,7 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.personal.community.common.CommunityEnum;
 import com.personal.community.common.MapStructImpl;
+import com.personal.community.config.jwt.TokenService;
 import com.personal.community.config.security.SecurityConfig;
+import com.personal.community.config.security.UserDetailsServiceImpl;
 import com.personal.community.domain.post.contorller.PostController;
 import com.personal.community.domain.post.dto.RequestCommentDto.CreateCommentDto;
 import com.personal.community.domain.post.dto.RequestPostDto;
@@ -19,10 +23,13 @@ import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.service.CommentService;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
+import com.personal.community.domain.user.repository.UserRepository;
 import com.personal.community.domain.user.service.UserService;
 import com.personal.community.unit_test.post.PostTest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -31,28 +38,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 
 @ActiveProfiles("test")
-@Import(MapStructImpl.class)
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(controllers = PostController.class,
-        excludeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class),
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OncePerRequestFilter.class)})
+@Import({MapStructImpl.class, SecurityConfig.class, UserDetailsServiceImpl.class})
+@ContextConfiguration
+@AutoConfigureMockMvc
+@WebMvcTest(controllers = PostController.class)
 public class PostControllerTest extends PostTest {
 
     final String baseUrl = "/api/v1/posts";
@@ -64,12 +69,24 @@ public class PostControllerTest extends PostTest {
     UserService userService;
     @MockBean
     CommentService commentService;
+    @MockBean
+    TokenService tokenService;
+    @MockBean
+    UserRepository userRepository;
     @Autowired
     ObjectMapper objectMapper;
+
     Logger log = LoggerFactory.getLogger(Logger.class);
 
+    @BeforeEach
+    void setUp(final WebApplicationContext context) {
+        this.mvc = MockMvcBuilders.webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+    }
 
     @Test
+    @WithMockUser(username = "malamut10@naver.com", roles = "USER")
     @DisplayName("게시물 생성 controller 테스트")
     void test1() throws Exception {
         //given
@@ -80,15 +97,18 @@ public class PostControllerTest extends PostTest {
         req.setType(CommunityEnum.PostType.FREE_BOARD);
 
         User user = createUserForTest();
-        MultiValueMap<String, String> queryParam = new LinkedMultiValueMap<>();
-        queryParam.set("userId", String.valueOf(user.getId()));
+        String token = "token";
 
-        given(userService.findUserById(any())).willReturn(user);
+        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(tokenService.getUsername(token)).willReturn(user.getEmail());
+        given(tokenService.getUserRole(token)).willReturn(user.getUserRole().toString());
 
         //when
-        ResultActions result = mvc.perform(post(baseUrl + "/create?userId=1")
+        ResultActions result = mvc.perform(post(baseUrl + "/create")
                                                    .contentType("application/json;charset=UTF-8")
-                                                    .content(objectMapper.writeValueAsString(req)));
+                                                   .header(HttpHeaders.AUTHORIZATION, token)
+                                                    .content(objectMapper.writeValueAsString(req))
+                                                    .with(csrf()));
 
         //then
         result.andExpect(status().isOk());

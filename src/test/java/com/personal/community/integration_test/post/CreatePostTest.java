@@ -14,8 +14,6 @@ import com.personal.community.integration_test.IntegrationTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,8 +23,6 @@ public class CreatePostTest extends IntegrationTest {
 
     @Autowired
     PostService postService;
-
-    Logger log = LoggerFactory.getLogger(Logger.class);
 
     @AfterEach
     void clear() {
@@ -51,7 +47,6 @@ public class CreatePostTest extends IntegrationTest {
 
         //when
         ResultActions resultAction = mvc.perform(post(postBaseUrl + "/create")
-                                                         .param("userId", String.valueOf(savedUser.getId()))
                                                          .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                                                          .contentType(MediaType.APPLICATION_JSON)
                                                          .content(objectMapper.writeValueAsString(createPostDto)));

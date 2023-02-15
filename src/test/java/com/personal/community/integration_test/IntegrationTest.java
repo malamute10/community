@@ -1,5 +1,6 @@
 package com.personal.community.integration_test;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,6 +66,7 @@ public class IntegrationTest {
     void setUp(final WebApplicationContext context, final RestDocumentationContextProvider provider) {
         this.mvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
+                .apply(springSecurity())
                 .alwaysDo(print())
                 .alwaysDo(restDocs)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))

@@ -4,6 +4,7 @@ package com.personal.community.domain.post.contorller;
 import com.personal.community.common.CommunityEnum.SearchTarget;
 import com.personal.community.common.MapStruct;
 import com.personal.community.common.Paging;
+import com.personal.community.config.security.UserDetailsImpl;
 import com.personal.community.domain.post.dto.RequestCommentDto.CreateCommentDto;
 import com.personal.community.domain.post.dto.RequestPostDto;
 import com.personal.community.domain.post.dto.ResponsePostDto;
@@ -23,6 +24,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,10 +49,11 @@ public class PostController {
     private final MapStruct mapper;
 
     @PostMapping("/create")
-    public ResponseEntity<Object> createPostDto(@RequestParam Long userId, @RequestBody RequestPostDto.CreatePostDto req){
-        User user = userService.findUserById(userId);
-        postService.createPost(req, user);
-
+    public ResponseEntity<Object> createPostDto(@AuthenticationPrincipal UserDetailsImpl user,
+                                                @RequestBody RequestPostDto.CreatePostDto req){
+        log.info("holderholder:{}", SecurityContextHolder.getContext().getAuthentication());
+        log.info("UserDetailsImpl:{}", user);
+        postService.createPost(req, user.getUser());
         return ResponseEntity.ok().build();
     }
 
