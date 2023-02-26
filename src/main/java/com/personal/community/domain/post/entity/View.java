@@ -8,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
 
 @Getter
 @Entity

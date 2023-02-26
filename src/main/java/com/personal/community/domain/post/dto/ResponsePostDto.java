@@ -5,7 +5,6 @@ import com.personal.community.common.Paging;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
-import org.springframework.data.domain.Pageable;
 
 public class ResponsePostDto {
 
