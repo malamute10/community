@@ -8,6 +8,8 @@ import com.personal.community.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,9 +22,11 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@Slf4j
 @Getter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -37,6 +41,7 @@ public class Comment {
     @Column(name = "content")
     private String content;
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private CommunityEnum.CommentStatus status;
 
     @CreatedDate
@@ -49,11 +54,11 @@ public class Comment {
     @JoinColumn(name = "post_id", referencedColumnName = "id")
     private Post post;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "parentComment")
     private List<Comment> childComments = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "comment_id", referencedColumnName = "id")
+    @JoinColumn(name = "parent_comment_id", referencedColumnName = "id")
     private Comment parentComment;
 
     @Builder
@@ -71,7 +76,6 @@ public class Comment {
         if(!this.user.getId().equals(user.getId())){
             throw CommunityException.of(ExceptionEnum.UNAUTHORIZED, "해당 댓글을 삭제할 권한이 없습니다.");
         }
-
         this.user = null;
         this.status = CommentStatus.DELETED;
         return this.childComments.iterator().hasNext();

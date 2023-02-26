@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface PostRepository extends JpaRepository<Post, Long>, QPostRepository {
 
     Page<Post> findAllByUserOrderByCreatedDateDesc(User user, Pageable pageable);
+
+    void deleteByIdAndUser(Long postId, User user);
 }

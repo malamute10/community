@@ -1,9 +1,10 @@
-== CREATE POST
+== DELETE POST
 
 === [Request URL]
 ....
 Delete  /api/v1/posts/{postId}
 ....
+include::{snippets}/delete-post/http-request.adoc[]
 
 === [Path Parameter]
 include::{snippets}/delete-post/path-parameters.adoc[]

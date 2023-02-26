@@ -48,8 +48,8 @@ public class PostService {
     }
 
     @Transactional
-    public void deleteById(Long postId) {
-        postRepository.deleteById(postId);
+    public void deleteById(Long postId, User user) {
+        postRepository.deleteByIdAndUser(postId, user);
     }
 
     @Transactional(readOnly = true)

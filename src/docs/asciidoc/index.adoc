@@ -17,6 +17,8 @@ https://github.com/malamute10/community
 * link:/docs/post/createPost.html[게시물 생성]
 * link:/docs/post/searchPost.html[게시물 리스트 검색]
 * link:/docs/post/findPost.html[게시물 검색]
+* link:/docs/post/deletePost.html[게시물 삭제]
+* link:/docs/post/createComment.html[댓글 작성]
 
 [[ENUM]]
 == ENUM

@@ -51,8 +51,6 @@ public class PostController {
     @PostMapping("/create")
     public ResponseEntity<Object> createPostDto(@AuthenticationPrincipal UserDetailsImpl user,
                                                 @RequestBody RequestPostDto.CreatePostDto req){
-        log.info("holderholder:{}", SecurityContextHolder.getContext().getAuthentication());
-        log.info("UserDetailsImpl:{}", user);
         postService.createPost(req, user.getUser());
         return ResponseEntity.ok().build();
     }
@@ -68,8 +66,9 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Object> deletePostById(@PathVariable Long postId){
-        postService.deleteById(postId);
+    public ResponseEntity<Object> deletePostById(@PathVariable Long postId,
+                                                 @AuthenticationPrincipal UserDetailsImpl user){
+        postService.deleteById(postId, user.getUser());
         return ResponseEntity.ok().build();
     }
 
@@ -77,27 +76,12 @@ public class PostController {
     public ResponseEntity<PostDtoList> findAll(@RequestParam(required = false) SearchTarget searchTarget,
                                                @RequestParam(required = false) String searchText,
                                                @RequestParam Integer page,
-                                               @RequestParam Integer size){
+                                               @RequestParam Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Post> postList = postService.findAllPagination(searchTarget, searchText, pageable);
         List<PostDto> postDtoList = mapper.postToPostDto(postList.getContent());
         Paging paging = Paging.of(page, size, postList.getTotalElements());
 
         return ResponseEntity.ok(PostDtoList.ofCreate(postDtoList, paging));
-    }
-
-    @PostMapping("/{postId}/comments")
-    public ResponseEntity<Object> createComment(@PathVariable Long postId,
-                                                @RequestBody CreateCommentDto createCommentDto) {
-        User user = userService.findUserById(createCommentDto.getUserId());
-        Post post = postService.findById(postId);
-        Comment comment = null;
-        if(createCommentDto.getParentCommentId() != null) {
-            comment = commentService.findById(createCommentDto.getParentCommentId());
-        }
-
-        commentService.createComment(createCommentDto, post, user, comment);
-
-        return ResponseEntity.ok().build();
     }
 }

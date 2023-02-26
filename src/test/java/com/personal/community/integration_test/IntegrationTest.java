@@ -60,6 +60,7 @@ public class IntegrationTest {
 
     protected String userBaseUrl = "/api/v1/users";
     protected String postBaseUrl = "/api/v1/posts";
+    protected String commentBaseUrl = "/api/v1/comments";
     protected Logger log = LoggerFactory.getLogger(Logger.class);
 
     @BeforeEach

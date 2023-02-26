@@ -12,11 +12,13 @@ import com.personal.community.domain.post.repository.CommentRepository;
 import com.personal.community.domain.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -46,7 +48,10 @@ public class CommentService {
     @Transactional
     public void deleteById(Long commentId, User user) {
         Comment comment = this.findById(commentId);
+        log.info("comment:{}", comment.getChildComments());
+        log.info("comment:{}", comment);
         boolean hasChildComment = comment.delete(user);
+        log.info("hasChildComment:{}", hasChildComment);
         if(!hasChildComment) {
             commentRepository.delete(comment);
         }

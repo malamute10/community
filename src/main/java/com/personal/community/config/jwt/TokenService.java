@@ -44,8 +44,6 @@ public class TokenService {
 
     public boolean verifyToken(String token) {
         try {
-            java.util.Date expiration = this.getClaims(token).getExpiration();
-            log.info("expiration:{} now:{}", expiration, new Date(System.currentTimeMillis()));
             return this.isExpired(token);
         } catch (ExpiredJwtException e) {
             throw CommunityException.of(ExceptionEnum.EXPIRED_TOKEN);

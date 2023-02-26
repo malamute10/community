@@ -1,4 +1,4 @@
-== CREATE POST
+== CREATE COMMENTC
 
 === [Request URL]
 ....

@@ -1,5 +1,7 @@
-package com.personal.community.integration_test.post;
+package com.personal.community.integration_test.comment;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -10,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.personal.community.common.CommunityEnum.PostType;
 import com.personal.community.domain.post.dto.RequestCommentDto.CreateCommentDto;
+import com.personal.community.domain.post.entity.Comment;
 import com.personal.community.domain.post.entity.Post;
 import com.personal.community.domain.post.service.PostService;
 import com.personal.community.domain.user.entity.User;
@@ -22,7 +25,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-public class CreateComment extends IntegrationTest {
+public class DeleteComment extends IntegrationTest {
 
     @Autowired
     PostService postService;
@@ -33,8 +36,8 @@ public class CreateComment extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("댓글 작성 테스트")
-    void createComment() throws Exception {
+    @DisplayName("댓글 삭제 테스트")
+    void deleteComments() throws Exception {
         //given
         String email = "malamute10@naver.com";
         String password = "password";
@@ -49,30 +52,31 @@ public class CreateComment extends IntegrationTest {
                 .user(savedUser)
                 .type(PostType.FREE_BOARD)
                 .build();
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
 
-        CreateCommentDto createCommentDto = new CreateCommentDto();
-        createCommentDto.setUserId(savedUser.getId());
-        createCommentDto.setComment("댓글");
-        createCommentDto.setParentCommentId(null);
+        Comment comment = Comment.builder()
+                .author(savedUser.getNickname())
+                .user(savedUser)
+                .content("댓글")
+                .post(savedPost)
+                .build();
+        log.info("child:{}", comment.getChildComments());
+        Comment savedComment = commentRepository.save(comment);
+        log.info("savedCommentChild:{}", savedComment.getChildComments());
 
         //when
-        ResultActions resultAction = mvc.perform(post(postBaseUrl + "/{postId}/comments", 1L)
+        ResultActions resultAction = mvc.perform(delete(commentBaseUrl + "/{commentId}", savedComment.getId())
                                                          .header(HttpHeaders.AUTHORIZATION, "Bearer " + access)
-                                                         .contentType(MediaType.APPLICATION_JSON)
-                                                         .content(objectMapper.writeValueAsString(createCommentDto)));
+                                                         .contentType(MediaType.APPLICATION_JSON));
         //then
         resultAction.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("postId").description("게시물 번호")
-                                ),
-                                requestFields(
-                                        fieldWithPath("userId").description("유저 번호"),
-                                        fieldWithPath("comment").description("댓글 내용"),
-                                        fieldWithPath("parentCommentId").description("대댓글")
+                                        parameterWithName("commentId").description("댓글 번호")
                                 )));
+        log.info("comment:{}", commentRepository.findAll());
+        assertThat(commentRepository.findById(savedComment.getId()).isEmpty()).isTrue();
     }
 }

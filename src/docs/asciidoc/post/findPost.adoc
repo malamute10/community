@@ -1,4 +1,4 @@
-== CREATE POST
+== FIND POST
 
 === [Request URL]
 ....

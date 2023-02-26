@@ -4,6 +4,7 @@
 ....
 POST  /api/v1/posts/create
 ....
+include::{snippets}/create-post/http-request.adoc[]
 
 === [Path Parameter]
 NONE

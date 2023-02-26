@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ServletExceptionHandler {
 
     @ExceptionHandler(CommunityException.class)
-    public ResponseEntity<ExceptionResponse> CommunityExceptionhandler(CommunityException exception) {
+    public ResponseEntity<ExceptionResponse> CommunityExceptionHandler(CommunityException exception) {
         return ResponseEntity.status(exception.getStatus())
                 .body(ExceptionResponse.ofCreate(exception));
     }
